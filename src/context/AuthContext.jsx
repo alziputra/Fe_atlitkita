@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -56,4 +57,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+};
+
+// Menambahkan propTypes untuk validasi properti
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired, // children harus berupa elemen React dan wajib diisi
 };
