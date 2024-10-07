@@ -1,4 +1,4 @@
-// import React, { useContext } from "react";
+import { useContext } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./layout/Header";
 import { AuthProvider } from "./context/AuthContext";
@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 function App() {
   const location = useLocation();
 
-  // Jika di halaman login, jangan tampilkan Header
+  // Jangan tampilkan Header di halaman login
   const showHeader = location.pathname !== "/login";
 
   return (

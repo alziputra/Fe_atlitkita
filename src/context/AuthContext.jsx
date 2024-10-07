@@ -36,7 +36,8 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(res.data);
+      setUser(res.data); // Pastikan res.data berisi role dan info user
+      console.log("Fetched User Data:", res.data); // Debugging untuk melihat data user
     } catch {
       toast.error("Failed to fetch user data");
     }
