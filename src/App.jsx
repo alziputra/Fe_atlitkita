@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./layout/Header";
 import { AuthProvider } from "./context/AuthContext";

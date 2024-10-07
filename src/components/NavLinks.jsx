@@ -7,7 +7,7 @@ export const NavLinks = ({ user }) => {
   }, [user]);
 
   return (
-    <ul className="flex space-x-4">
+    <ul className="flex flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 text-center">
       {/* Tautan ke Dashboard, terlihat oleh semua peran */}
       <li>
         <Link to="/dashboard" className="text-white hover:underline">
