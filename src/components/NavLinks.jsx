@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -46,4 +47,11 @@ export const NavLinks = ({ user }) => {
       )}
     </ul>
   );
+};
+
+// Menambahkan propTypes untuk validasi properti
+NavLinks.propTypes = {
+  user: PropTypes.shape({
+    role_name: PropTypes.string.isRequired, // role_name adalah string yang wajib ada di dalam objek user
+  }).isRequired,
 };
