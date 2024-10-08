@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import { AthleteContext } from "../../context/AthleteContext";
 import { FaTimes } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
   const { addAthlete, editAthlete } = useContext(AthleteContext);
@@ -16,8 +17,8 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
       setName(athlete.name);
       setTeam(athlete.team);
       setMartial(athlete.martial);
-      setHeight(athlete.height);
-      setWeight(athlete.weight);
+      setHeight(athlete.height.toString());
+      setWeight(athlete.weight.toString());
     } else {
       setName("");
       setTeam("");
@@ -27,17 +28,22 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
     }
   }, [athlete]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const athleteData = { name, team, martial, height, weight };
 
-    if (athlete) {
-      editAthlete(athlete.athlete_id, athleteData);
-    } else {
-      addAthlete(athleteData);
+    try {
+      if (athlete) {
+        await editAthlete(athlete.athlete_id, athleteData);
+        toast.success("Data atlet berhasil diperbarui!"); // Toast success
+      } else {
+        await addAthlete(athleteData);
+        toast.success("Data atlet berhasil ditambahkan!"); // Toast success
+      }
+      setIsOpen(false);
+    } catch (err) {
+      toast.error("Gagal menyimpan data atlet: " + err.message); // Toast error
     }
-
-    setIsOpen(false); // Tutup modal setelah submit
   };
 
   return (
@@ -64,7 +70,7 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
           </div>
           <div className="form-control mb-4">
             <label className="label">
-              <span className="label-text">Martial</span>
+              <span className="label-text">Martial Art</span>
             </label>
             <input type="text" className="input input-bordered" value={martial} onChange={(e) => setMartial(e.target.value)} required />
           </div>
@@ -74,7 +80,7 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             </label>
             <input type="text" className="input input-bordered" value={height} onChange={(e) => setHeight(e.target.value)} required />
           </div>
-          <div className="form-control mb-6">
+          <div className="form-control mb-4">
             <label className="label">
               <span className="label-text">Weight</span>
             </label>
@@ -91,17 +97,16 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
   );
 };
 
-
 AthleteModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   setIsOpen: PropTypes.func.isRequired,
   athlete: PropTypes.shape({
+    athlete_id: PropTypes.number,
     name: PropTypes.string,
     team: PropTypes.string,
     martial: PropTypes.string,
-    height: PropTypes.number,
-    weight: PropTypes.number,
-    athlete_id: PropTypes.number,
+    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }),
 };
 

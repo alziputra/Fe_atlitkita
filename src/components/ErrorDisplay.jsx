@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const ErrorDisplay = ({ message }) => {
   return (
     <div className="col-span-3 text-red-500">
-      <p>{message}</p>
+      <p>{message} HAHA HAHAHHA</p>
     </div>
   );
 };
@@ -13,5 +13,3 @@ ErrorDisplay.propTypes = {
 };
 
 export default ErrorDisplay;
-
-

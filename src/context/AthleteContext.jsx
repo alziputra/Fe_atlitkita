@@ -1,10 +1,14 @@
 import { createContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import Cookies from "js-cookie";
 
 export const AthleteContext = createContext();
 
 export const AthleteProvider = ({ children }) => {
+  AthleteProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+  };
   const [athletes, setAthletes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +23,7 @@ export const AthleteProvider = ({ children }) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAthletes(response.data.data);
-      } catch (err) {
+      } catch {
         setError("Failed to fetch athletes data.");
       } finally {
         setLoading(false);
@@ -35,7 +39,7 @@ export const AthleteProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAthletes((prev) => [...prev, response.data.data]);
-    } catch (err) {
+    } catch {
       setError("Failed to add athlete.");
     }
   };
@@ -47,7 +51,7 @@ export const AthleteProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAthletes((prev) => prev.map((athlete) => (athlete.id === id ? updatedAthlete : athlete)));
-    } catch (err) {
+    } catch {
       setError("Failed to update athlete.");
     }
   };
@@ -59,7 +63,7 @@ export const AthleteProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAthletes((prev) => prev.filter((athlete) => athlete.id !== id));
-    } catch (err) {
+    } catch {
       setError("Failed to delete athlete.");
     }
   };
