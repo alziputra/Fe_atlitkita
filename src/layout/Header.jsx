@@ -15,7 +15,7 @@ const Header = () => {
 
   return (
     <header className="bg-base-100 shadow-lg p-4 flex flex-col sm:flex-col lg:flex-row justify-between items-center">
-      <div className="flex items-center mb-4 lg:mb-0">
+      <div className="flex mb-4 lg:mb-0">
         {/* Logo */}
         <img src={Logo} alt="App Logo" className="h-10 w-40" />
       </div>

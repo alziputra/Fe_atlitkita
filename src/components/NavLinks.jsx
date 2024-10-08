@@ -8,10 +8,10 @@ export const NavLinks = ({ user }) => {
   }, [user]);
 
   return (
-    <ul className="flex flex-col sm:flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 text-center">
+    <ul className="flex flex-col sm:flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 w-full text-center">
       {/* Tautan ke Dashboard, terlihat oleh semua peran */}
-      <li className="w-full">
-        <Link to="/dashboard" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
+      <li className="w-full sm:w-auto">
+        <Link to="/dashboard" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
           Dashboard
         </Link>
       </li>
@@ -19,18 +19,18 @@ export const NavLinks = ({ user }) => {
       {/* Tautan hanya untuk Admin */}
       {user.role_name === "admin" && (
         <>
-          <li className="w-full">
-            <Link to="/athletes" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
+          <li className="sm:w-auto">
+            <Link to="/athletes" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Athletes
             </Link>
           </li>
-          <li className="w-full">
-            <Link to="/competitions" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
+          <li className="sm:w-auto">
+            <Link to="/competitions" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Competitions
             </Link>
           </li>
-          <li className="w-full">
-            <Link to="/results" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
+          <li className="sm:w-auto">
+            <Link to="/results" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Results
             </Link>
           </li>
@@ -39,8 +39,8 @@ export const NavLinks = ({ user }) => {
 
       {/* Tautan hanya untuk Judge */}
       {user.role_name === "judge" && (
-        <li className="w-full">
-          <Link to="/scores" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
+        <li className="sm:w-auto">
+          <Link to="/scores" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
             Scores
           </Link>
         </li>
