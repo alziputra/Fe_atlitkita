@@ -8,10 +8,10 @@ export const NavLinks = ({ user }) => {
   }, [user]);
 
   return (
-    <ul className="flex flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 text-center">
+    <ul className="flex flex-col sm:flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 text-center">
       {/* Tautan ke Dashboard, terlihat oleh semua peran */}
-      <li>
-        <Link to="/dashboard" className="text-white hover:underline">
+      <li className="w-full">
+        <Link to="/dashboard" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
           Dashboard
         </Link>
       </li>
@@ -19,18 +19,18 @@ export const NavLinks = ({ user }) => {
       {/* Tautan hanya untuk Admin */}
       {user.role_name === "admin" && (
         <>
-          <li>
-            <Link to="/athletes" className="text-white hover:underline">
+          <li className="w-full">
+            <Link to="/athletes" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
               Athletes
             </Link>
           </li>
-          <li>
-            <Link to="/competitions" className="text-white hover:underline">
+          <li className="w-full">
+            <Link to="/competitions" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
               Competitions
             </Link>
           </li>
-          <li>
-            <Link to="/results" className="text-white hover:underline">
+          <li className="w-full">
+            <Link to="/results" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
               Results
             </Link>
           </li>
@@ -39,8 +39,8 @@ export const NavLinks = ({ user }) => {
 
       {/* Tautan hanya untuk Judge */}
       {user.role_name === "judge" && (
-        <li>
-          <Link to="/scores" className="text-white hover:underline">
+        <li className="w-full">
+          <Link to="/scores" className="block w-full py-2 hover:bg-primary hover:text-white rounded-lg">
             Scores
           </Link>
         </li>

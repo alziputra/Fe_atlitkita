@@ -14,23 +14,27 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-      <div className="flex items-center">
-        <img src={Logo} alt="App Logo" className="h-10 w-40 mr-2" />
+    <header className="bg-base-100 shadow-lg p-4 flex flex-col sm:flex-col lg:flex-row justify-between items-center">
+      <div className="flex items-center mb-4 lg:mb-0">
+        {/* Logo */}
+        <img src={Logo} alt="App Logo" className="h-10 w-40" />
       </div>
 
-      <button className="block lg:hidden text-2xl" onClick={toggleMenu}>
-        <FaBars />
-      </button>
+      {/* Hamburger Menu Button for Mobile */}
+      <div className="flex lg:hidden mb-4 sm:mb-0">
+        <button className="btn btn-square btn-ghost text-2xl" onClick={toggleMenu}>
+          <FaBars />
+        </button>
+      </div>
 
       {/* Navigasi: NavLinks untuk pengguna yang login */}
-      <nav className={`lg:flex ${isMenuOpen ? "block" : "hidden"} lg:block absolute lg:relative top-16 lg:top-0 left-0 lg:left-auto w-full lg:w-auto bg-gray-800 lg:bg-transparent`}>
+      <nav className={`lg:flex lg:flex-row sm:flex-col sm:items-start items-center ${isMenuOpen ? "block" : "hidden"} lg:block`}>
         <div className="flex flex-col lg:flex-row lg:space-x-4 items-center lg:items-center p-4 lg:p-0">
-          {user && <NavLinks user={user} />} {/* Tampilkan NavLinks jika user sudah login */}
+          {user && <NavLinks user={user} />}
           {user && (
             <div className="flex flex-col lg:flex-row items-center lg:space-x-4 mt-4 lg:mt-0">
-              <span>Hello, {user.name}</span>
-              <button onClick={logout} className="bg-red-500 px-4 py-2 rounded">
+              <span className="mb-2 lg:mb-0">Hello, {user.name}</span>
+              <button onClick={logout} className="btn btn-error px-4 py-2 rounded-lg">
                 Logout
               </button>
             </div>
