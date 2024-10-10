@@ -38,10 +38,11 @@ const Header = () => {
           )}
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full ">
-                <img src="https://cdn-icons-png.flaticon.com/512/5987/5987424.png" alt="" />
+              <div className="w-10 h-10 rounded-full overflow-hidden">
+                <img src="https://cdn-icons-png.flaticon.com/512/5987/5987424.png" alt="User Avatar" className="object-cover w-full h-full" />
               </div>
             </div>
+
             <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
               <li>
                 <a onClick={logout} className="">
