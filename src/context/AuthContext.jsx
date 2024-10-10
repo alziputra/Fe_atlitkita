@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -23,7 +23,7 @@ const useLogin = (setUser, navigate) => {
         password,
       });
 
-      // pastikan respon dari server memiliki accessToken dan refreshToken
+      // Pastikan respon dari server memiliki accessToken dan refreshToken
       const { accessToken, refreshToken } = res.data;
 
       if (!accessToken || !refreshToken) {
@@ -48,6 +48,65 @@ const useLogin = (setUser, navigate) => {
   return { login };
 };
 
+// Fungsi untuk mengambil data user
+const fetchUser = async (setUser) => {
+  let token = Cookies.get("accessToken");
+  const refreshToken = Cookies.get("refreshToken");
+
+  // Hanya ambil data user jika token tersedia
+  if (!token) return;
+
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setUser(res.data.data); // Simpan data user di state
+  } catch (error) {
+    if (error.response && error.response.status === 401 && refreshToken) {
+      // Jika accessToken kadaluarsa, coba gunakan refreshToken
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${refreshToken}` },
+        });
+
+        // Simpan accessToken yang baru didapat dari refreshToken
+        const { accessToken } = res.data;
+        Cookies.set("accessToken", accessToken);
+
+        // Ulangi permintaan dengan accessToken yang baru
+        const retryRes = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        setUser(retryRes.data);
+      } catch {
+        // Jika refreshToken juga gagal atau kadaluarsa
+        handleTokenExpired();
+      }
+    } else {
+      handleTokenExpired(); // Jika kedua token sudah habis
+    }
+  }
+};
+
+// Fungsi untuk menangani token yang kadaluarsa
+const handleTokenExpired = () => {
+  toast(
+    (t) => (
+      <ModalConfirmation
+        message="Masa aktif token sudah habis. Silakan login kembali."
+        onConfirm={() => {
+          Cookies.remove("accessToken");
+          Cookies.remove("refreshToken");
+          toast.dismiss(t.id);
+          window.location.reload(); // Reload halaman,
+          Navigate("/login"); // Redirect ke halaman login
+        }}
+      />
+    ),
+    { duration: 0 } // Toast tetap muncul sampai ada aksi
+  );
+};
+
 // Fungsi untuk menangani error login
 const handleLoginError = (error) => {
   if (error.response) {
@@ -68,30 +127,12 @@ const handleLoginError = (error) => {
         toast.error("Kesalahan server. Silakan coba lagi nanti.");
         break;
       default:
-        toast.error("username atau email tidak ditemukan");
+        toast.error("Username atau email tidak ditemukan.");
     }
   } else if (error.request) {
     toast.error("Tidak dapat terhubung ke server. Periksa koneksi Anda atau coba lagi nanti.");
   } else {
     toast.error("Terjadi kesalahan yang tidak terduga. Silakan coba lagi.");
-    console.error("Login error:", error.message);
-  }
-};
-
-// Fungsi untuk mengambil data user
-const fetchUser = async (setUser) => {
-  const token = Cookies.get("accessToken");
-
-  // Hanya ambil data user jika token tersedia
-  if (!token) return;
-
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setUser(res.data); // Simpan data user di state
-  } catch (error) {
-    console.error("Failed to fetch user data", error);
   }
 };
 

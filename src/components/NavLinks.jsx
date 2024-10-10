@@ -8,7 +8,7 @@ export const NavLinks = ({ user }) => {
   }, [user]);
 
   return (
-    <ul className="flex flex-col sm:flex-col lg:flex-row lg:space-x-4 space-y-2 lg:space-y-0 w-full text-center">
+    <ul className="menu w-full lg:menu-horizontal bg-base-100 rounded-box gap-3">
       {/* Tautan ke Dashboard, terlihat oleh semua peran */}
       <li className="w-full sm:w-auto">
         <Link to="/dashboard" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
@@ -19,17 +19,17 @@ export const NavLinks = ({ user }) => {
       {/* Tautan hanya untuk Admin */}
       {user.role_name === "admin" && (
         <>
-          <li className="sm:w-auto">
+          <li className="w-full sm:w-auto">
             <Link to="/athletes" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Athletes
             </Link>
           </li>
-          <li className="sm:w-auto">
+          <li className="w-full sm:w-auto">
             <Link to="/competitions" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Competitions
             </Link>
           </li>
-          <li className="sm:w-auto">
+          <li className="w-full sm:w-auto">
             <Link to="/results" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Results
             </Link>
@@ -39,7 +39,7 @@ export const NavLinks = ({ user }) => {
 
       {/* Tautan hanya untuk Judge */}
       {user.role_name === "judge" && (
-        <li className="sm:w-auto">
+        <li className="w-full sm:w-auto">
           <Link to="/scores" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
             Scores
           </Link>
@@ -52,6 +52,6 @@ export const NavLinks = ({ user }) => {
 // Menambahkan propTypes untuk validasi properti
 NavLinks.propTypes = {
   user: PropTypes.shape({
-    role_name: PropTypes.string.isRequired, // role_name adalah string yang wajib ada di dalam objek user
-  }).isRequired,
+    role_name: PropTypes.string,
+  }),
 };

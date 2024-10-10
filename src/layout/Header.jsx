@@ -1,47 +1,58 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { NavLinks } from "../components/NavLinks";
-import { FaBars } from "react-icons/fa";
 import Logo from "../assets/logo.png";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Toggle menu untuk tampilan mobile
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   return (
-    <header className="bg-base-100 shadow-lg p-4 flex flex-col sm:flex-col lg:flex-row justify-between items-center">
-      <div className="flex mb-4 lg:mb-0">
-        {/* Logo */}
-        <img src={Logo} alt="App Logo" className="h-10 w-40" />
-      </div>
+    <>
+      <header className="navbar bg-base-100 shadow-lg lg:px-10 sm:px-2">
+        <div className="navbar-start">
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
+              </svg>
+            </div>
+            {/* Dropdown menu mobile */}
+            <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              {user && <NavLinks user={user} />}
+            </ul>
+          </div>
+          {/* Menyesuaikan ukuran logo */}
+          <img src={Logo} alt="Logo" className="w-28 h-auto" />
+        </div>
 
-      {/* Hamburger Menu Button for Mobile */}
-      <div className="flex lg:hidden mb-4 sm:mb-0">
-        <button className="btn btn-square btn-ghost text-2xl" onClick={toggleMenu}>
-          <FaBars />
-        </button>
-      </div>
+        {/* Menu desktop */}
+        <div className="navbar-center hidden lg:flex">
+          <ul className="menu menu-horizontal px-1">{user && <NavLinks user={user} />}</ul>
+        </div>
 
-      {/* Navigasi: NavLinks untuk pengguna yang login */}
-      <nav className={`lg:flex lg:flex-row sm:flex-col sm:items-start items-center ${isMenuOpen ? "block" : "hidden"} lg:block`}>
-        <div className="flex flex-col lg:flex-row lg:space-x-4 items-center lg:items-center p-4 lg:p-0">
-          {user && <NavLinks user={user} />}
+        <div className="navbar-end gap-3">
           {user && (
-            <div className="flex flex-col lg:flex-row items-center lg:space-x-4 mt-4 lg:mt-0">
-              <span className="mb-2 lg:mb-0">Hello, {user.name}</span>
-              <button onClick={logout} className="btn btn-error px-4 py-2 rounded-lg">
-                Logout
-              </button>
+            <div className=" lg:flex items-center">
+              <span className="text-md">Hello, {user.name}</span>
             </div>
           )}
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+              <div className="w-10 rounded-full ">
+                <img src="https://cdn-icons-png.flaticon.com/512/5987/5987424.png" alt="" />
+              </div>
+            </div>
+            <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              <li>
+                <a onClick={logout} className="">
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </nav>
-    </header>
+      </header>
+    </>
   );
 };
 
