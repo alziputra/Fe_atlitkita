@@ -22,14 +22,23 @@ const useLogin = (setUser, navigate) => {
         usernameOrEmail,
         password,
       });
+
+      // pastikan respon dari server memiliki accessToken dan refreshToken
       const { accessToken, refreshToken } = res.data;
 
+      if (!accessToken || !refreshToken) {
+        throw new Error("Access token atau refresh token tidak ditemukan di response.");
+      }
+
+      // Simpan token di cookie
       Cookies.set("accessToken", accessToken);
       Cookies.set("refreshToken", refreshToken);
 
+      // Ambil data user dan simpan di state
       toast.success("Login berhasil.");
       await fetchUser(setUser);
 
+      // Redirect ke dashboard
       navigate("/dashboard");
     } catch (error) {
       handleLoginError(error);
@@ -59,28 +68,30 @@ const handleLoginError = (error) => {
         toast.error("Kesalahan server. Silakan coba lagi nanti.");
         break;
       default:
-        toast.error("Gagal login. Silakan coba lagi.");
+        toast.error("username atau email tidak ditemukan");
     }
   } else if (error.request) {
     toast.error("Tidak dapat terhubung ke server. Periksa koneksi Anda atau coba lagi nanti.");
   } else {
     toast.error("Terjadi kesalahan yang tidak terduga. Silakan coba lagi.");
+    console.error("Login error:", error.message);
   }
 };
 
 // Fungsi untuk mengambil data user
 const fetchUser = async (setUser) => {
-  try {
-    const token = Cookies.get("accessToken");
-    if (!token) return;
+  const token = Cookies.get("accessToken");
 
+  // Hanya ambil data user jika token tersedia
+  if (!token) return;
+
+  try {
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    setUser(res.data);
-  } catch {
-    toast.error("Gagal mengambil data pengguna.");
+    setUser(res.data); // Simpan data user di state
+  } catch (error) {
+    console.error("Failed to fetch user data", error);
   }
 };
 
@@ -90,11 +101,11 @@ const useLogout = (setUser, navigate) => {
     toast(
       (t) => (
         <ModalConfirmation
-          message="Apakah Anda ingin logout?" 
+          message="Apakah Anda ingin logout?"
           onConfirm={() => {
             Cookies.remove("accessToken");
             Cookies.remove("refreshToken");
-            setUser(null);
+            setUser(null); // Reset state user
             toast.dismiss(t.id);
             navigate("/login"); // Arahkan ke halaman login
             window.location.reload(); // Reload halaman
@@ -102,7 +113,7 @@ const useLogout = (setUser, navigate) => {
           onCancel={() => toast.dismiss(t.id)}
         />
       ),
-      { duration: 0 }
+      { duration: 0 } // Durasi toast 0 berarti toast akan tetap muncul sampai ada aksi konfirmasi
     );
   };
 
@@ -111,14 +122,18 @@ const useLogout = (setUser, navigate) => {
 
 // Provider untuk konteks autentikasi
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // Menyimpan state user
   const navigate = useNavigate();
   const { login } = useLogin(setUser, navigate);
   const { logout } = useLogout(setUser, navigate);
 
+  // panggil fetchUser jika token tersedia
   useEffect(() => {
-    fetchUser(setUser);
-  }, []);
+    const token = Cookies.get("accessToken");
+    if (token) {
+      fetchUser(setUser);
+    }
+  }, []); // Gunakan token untuk mengambil data user
 
   return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 };

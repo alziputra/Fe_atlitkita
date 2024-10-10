@@ -67,8 +67,8 @@ const Athletes = () => {
                 <td>{athlete.name}</td>
                 <td>{athlete.team}</td>
                 <td>{athlete.martial}</td>
-                <td>{athlete.height}</td>
-                <td>{athlete.weight}</td>
+                <td>{athlete.height} cm</td>
+                <td>{athlete.weight} kg</td>
                 <td className="flex justify-center space-x-2">
                   <button className="btn btn-warning btn-xs" onClick={() => handleEdit(athlete)}>
                     <FaEdit className="mr-1" />

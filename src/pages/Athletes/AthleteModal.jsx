@@ -78,13 +78,13 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             <label className="label">
               <span className="label-text">Height</span>
             </label>
-            <input type="text" className="input input-bordered" value={height} onChange={(e) => setHeight(e.target.value)} required />
+            <input type="text" className="input input-bordered" placeholder="cm" value={height} onChange={(e) => setHeight(e.target.value)} required />
           </div>
           <div className="form-control mb-4">
             <label className="label">
               <span className="label-text">Weight</span>
             </label>
-            <input type="text" className="input input-bordered" value={weight} onChange={(e) => setWeight(e.target.value)} required />
+            <input type="text" className="input input-bordered" placeholder="kg" value={weight} onChange={(e) => setWeight(e.target.value)} required />
           </div>
           <div className="modal-action">
             <button type="submit" className="btn btn-primary">
