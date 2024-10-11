@@ -2,8 +2,10 @@ import PropTypes from "prop-types";
 
 const ErrorDisplay = ({ message }) => {
   return (
-    <div className="col-span-3 text-red-500">
-      <p>{message} HAHA HAHAHHA</p>
+    <div className="toast toast-start">
+      <div className="alert alert-error">
+        <span>{message} HAHA HAHAHHA</span>
+      </div>
     </div>
   );
 };

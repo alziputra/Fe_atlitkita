@@ -30,17 +30,17 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:px-5 sm:px-5 lg:py-20 sm:py-10">
       {errorMessage && <ErrorDisplay message={errorMessage} />}
 
       {/* Widget for Total Athletes */}
-      <Widget title="Total Athletes" count={athleteCount} icon={<FaRunning />} link="/athletes" />
+      <Widget title="Total Athletes" count={athleteCount} icon={<FaRunning />} link="/athletes" color="bg-red-200" />
 
       {/* Widget for Total Users */}
-      <Widget title="Total Users" count={userCount} icon={<FaUser />} link="/users" />
+      <Widget title="Total Users" count={userCount} icon={<FaUser />} link="/users" color="bg-amber-600" />
 
       {/* Widget for Total Competitions */}
-      <Widget title="Total Competitions" count={competitionCount} icon={<FaTrophy />} link="/competitions" />
+      <Widget title="Total Competitions" count={competitionCount} icon={<FaTrophy />} link="/competitions" color="bg-lime-500" />
     </div>
   );
 };

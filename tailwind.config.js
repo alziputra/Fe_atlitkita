@@ -3,7 +3,6 @@ import daisyui from "daisyui";
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  plugins: [daisyui],
   theme: {
     screens: {
       sm: "340px",
@@ -13,4 +12,5 @@ export default {
     },
     extend: {},
   },
+  plugins: [("@tailwindcss/typography"), daisyui],
 };

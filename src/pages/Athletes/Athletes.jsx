@@ -44,8 +44,8 @@ const Athletes = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Athletes</h2>
-        <button className="btn btn-primary" onClick={handleAdd}>
-          <FaPlus className="mr-2" />
+        <button className="btn btn-primary btn-sm" onClick={handleAdd}>
+          <FaPlus className="mr-1" />
           Add Athlete
         </button>
       </div>

@@ -22,7 +22,7 @@ export const fetchData = async (endpoint) => {
             headers: { Authorization: `Bearer ${refreshToken}` },
           });
           return res.data.data.length;
-        } catch (refreshError) {
+        } catch {
           // Jika refreshToken juga kadaluarsa
           toast(
             (t) => (
