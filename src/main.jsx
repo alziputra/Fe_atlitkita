@@ -6,8 +6,9 @@ import Login from "./pages/Auth/Login";
 import Dashboard from "./pages/Dashboard";
 import Athletes from "./pages/Athletes/Athletes";
 import Competitions from "./pages/Competitions/Competitions";
-import Results from "./pages/Results/Results";
+import Matches from "./pages/Matches/Matches";
 import Scores from "./pages/Scores/Scores";
+import Results from "./pages/Results/Results";
 import NotFound from "./pages/NotFound";
 
 // Routing configuration
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: "competitions", // Hanya admin yang bisa akses
         element: <Competitions />,
+      },
+      {
+        path: "matches", // Hanya admin yang bisa akses
+        element: <Matches />,
       },
       {
         path: "results", // Hanya admin yang bisa akses

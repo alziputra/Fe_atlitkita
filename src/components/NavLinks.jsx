@@ -30,6 +30,11 @@ export const NavLinks = ({ user }) => {
             </Link>
           </li>
           <li className="w-full sm:w-auto">
+            <Link to="/matches" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
+              Matches
+            </Link>
+          </li>
+          <li className="w-full sm:w-auto">
             <Link to="/results" className="w-full sm:w-auto py-2 hover:bg-accent hover:text-white rounded-lg">
               Results
             </Link>
