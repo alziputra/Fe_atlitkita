@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useLocation } from "react-router-dom";
 
 export const MatchContext = createContext();
 
@@ -9,30 +11,34 @@ export const MatchProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = Cookies.get("accessToken");
+  const location = useLocation();
 
   // Fetch matches data from API
   useEffect(() => {
+    // Hanya panggil fetchMatches jika token tersedia dan user berada di halaman /matches
+    if (!token || location.pathname !== "/matches") {
+      setLoading(false);
+      return; // Tidak fetch data jika token tidak ada atau bukan di halaman /matches
+    }
+
     const fetchMatches = async () => {
-      if (!token) {
-        setLoading(false);
-        return;
-      }
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/matches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMatches(response.data.data); // Ambil data dari response
-        setError(null);
+        setError(null); // Reset error jika sukses
       } catch (error) {
         setError("Failed to fetch matches data.");
         console.error(error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Matikan loading setelah fetch selesai
       }
     };
+
     fetchMatches();
-  }, [token]);
+  }, [token, location.pathname]); // Pastikan token dan pathname sesuai sebelum memanggil useEffect
 
   // Add new match
   const addMatch = async (matchData) => {
@@ -106,4 +112,9 @@ export const MatchProvider = ({ children }) => {
       {children}
     </MatchContext.Provider>
   );
+};
+
+// Menambahkan propTypes untuk validasi properti
+MatchProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

@@ -7,16 +7,13 @@ import { useLocation } from "react-router-dom";
 export const AthleteContext = createContext();
 
 export const AthleteProvider = ({ children }) => {
-  AthleteProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-  };
-
+  
   const [athletes, setAthletes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
   const token = Cookies.get("accessToken");
-
+  
   // fetch athletes data from API
   useEffect(() => {
     const fetchAthletes = async () => {
@@ -24,7 +21,7 @@ export const AthleteProvider = ({ children }) => {
         setLoading(false);
         return; // Tidak fetch data jika token tidak ada atau bukan di halaman /athletes
       }
-
+      
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/athletes`, {
@@ -39,10 +36,10 @@ export const AthleteProvider = ({ children }) => {
         setLoading(false);
       }
     };
-
+    
     fetchAthletes();
   }, [token, location.pathname]); // Tambahkan location.pathname sebagai dependency untuk memantau halaman aktif
-
+  
   // Add new athlete
   const addAthlete = async (athlete) => {
     try {
@@ -50,11 +47,11 @@ export const AthleteProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const newAthlete = response.data.data;
-
+      
       if (!newAthlete.athlete_id) {
         throw new Error("Athlete ID is missing in response");
       }
-
+      
       setAthletes((prev) => [...prev, newAthlete]); // Tambahkan data baru ke list atlet
       setError(null); // Bersihkan error jika sukses
     } catch (err) {
@@ -80,7 +77,7 @@ export const AthleteProvider = ({ children }) => {
       console.error(err);
     }
   };
-
+  
   // Delete athlete
   const deleteAthlete = async (id) => {
     try {
@@ -88,7 +85,7 @@ export const AthleteProvider = ({ children }) => {
       const response = await axios.delete(`${import.meta.env.VITE_API_URL}/athletes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
+      
       // Cek status di dalam respons server
       if (response.data.status === "success") {
         // Jika penghapusan berhasil, hapus data dari state
@@ -108,19 +105,24 @@ export const AthleteProvider = ({ children }) => {
       console.error(err);
     }
   };
-
+  
   return (
     <AthleteContext.Provider
-      value={{
-        athletes,
-        loading,
-        error,
-        addAthlete,
-        editAthlete,
-        deleteAthlete,
-      }}
+    value={{
+      athletes,
+      loading,
+      error,
+      addAthlete,
+      editAthlete,
+      deleteAthlete,
+    }}
     >
       {children}
     </AthleteContext.Provider>
   );
+};
+
+// Menambahkan propTypes untuk validasi properti
+AthleteProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
