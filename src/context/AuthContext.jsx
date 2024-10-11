@@ -98,8 +98,8 @@ const handleTokenExpired = () => {
           Cookies.remove("accessToken");
           Cookies.remove("refreshToken");
           toast.dismiss(t.id);
-          window.location.reload(); // Reload halaman,
           Navigate("/login"); // Redirect ke halaman login
+          window.location.reload(); // Reload halaman,
         }}
       />
     ),

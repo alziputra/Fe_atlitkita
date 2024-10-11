@@ -84,13 +84,27 @@ export const AthleteProvider = ({ children }) => {
   // Delete athlete
   const deleteAthlete = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/athletes/${id}`, {
+      // Kirim permintaan DELETE ke server
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/athletes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAthletes((prev) => prev.filter((athlete) => athlete.athlete_id !== id)); // Hapus data berdasarkan athlete_id
-      setError(null); // Bersihkan error jika sukses
+
+      // Cek status di dalam respons server
+      if (response.data.status === "success") {
+        // Jika penghapusan berhasil, hapus data dari state
+        setAthletes((prev) => prev.filter((athlete) => athlete.athlete_id !== id));
+        setError(null); // Bersihkan error jika sukses
+      } else if (response.data.status === "error") {
+        // Jika server mengembalikan status error, set pesan error dari server
+        setError(response.data.message); // Gunakan pesan error dari server
+      }
     } catch (err) {
-      setError("Failed to delete athlete.");
+      // Tangani jika terjadi error lain (misalnya, kegagalan jaringan atau status bukan 200)
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message); // Tampilkan pesan error dari server
+      } else {
+        setError("Failed to delete athlete."); // Pesan default jika tidak ada pesan dari server
+      }
       console.error(err);
     }
   };
