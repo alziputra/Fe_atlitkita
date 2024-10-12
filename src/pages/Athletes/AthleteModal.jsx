@@ -48,46 +48,46 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-      <div className="modal-box">
+      <div className="modal-box w-80 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-white p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">{athlete ? "Edit Athlete" : "Add Athlete"}</h2>
-          <button className="btn btn-ghost" onClick={() => setIsOpen(false)}>
+          <h2 className="text-lg font-bold text-black">{athlete ? "Edit Athlete" : "Add Athlete"}</h2>
+          <button className="btn bg-red-500 text-black border-2 border-black hover:bg-red-600" onClick={() => setIsOpen(false)}>
             <FaTimes />
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="form-control mb-4">
+          <div className="form-control mb-2">
             <label className="label">
-              <span className="label-text">Name</span>
+              <span className="label-text text-black">Name</span>
             </label>
-            <input type="text" className="input input-bordered" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div className="form-control mb-2">
+            <label className="label">
+              <span className="label-text text-black">Team</span>
+            </label>
+            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={team} onChange={(e) => setTeam(e.target.value)} required />
+          </div>
+          <div className="form-control mb-2">
+            <label className="label">
+              <span className="label-text text-black">Martial Art</span>
+            </label>
+            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={martial} onChange={(e) => setMartial(e.target.value)} required />
+          </div>
+          <div className="form-control mb-2">
+            <label className="label">
+              <span className="label-text text-black">Height</span>
+            </label>
+            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" placeholder="cm" value={height} onChange={(e) => setHeight(e.target.value)} required />
           </div>
           <div className="form-control mb-4">
             <label className="label">
-              <span className="label-text">Team</span>
+              <span className="label-text text-black">Weight</span>
             </label>
-            <input type="text" className="input input-bordered" value={team} onChange={(e) => setTeam(e.target.value)} required />
-          </div>
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Martial Art</span>
-            </label>
-            <input type="text" className="input input-bordered" value={martial} onChange={(e) => setMartial(e.target.value)} required />
-          </div>
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Height</span>
-            </label>
-            <input type="text" className="input input-bordered" placeholder="cm" value={height} onChange={(e) => setHeight(e.target.value)} required />
-          </div>
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Weight</span>
-            </label>
-            <input type="text" className="input input-bordered" placeholder="kg" value={weight} onChange={(e) => setWeight(e.target.value)} required />
+            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" placeholder="kg" value={weight} onChange={(e) => setWeight(e.target.value)} required />
           </div>
           <div className="modal-action">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] hover:text-black">
               {athlete ? "Save Changes" : "Add Athlete"}
             </button>
           </div>

@@ -44,35 +44,47 @@ const Competitions = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Competitions</h2>
-        <button className="btn btn-primary btn-sm" onClick={handleAdd}>
-          <FaPlus className="mr-1" />
+        <button className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] btn-sm flex items-center" onClick={handleAdd}>
+          <FaPlus />
           Add Competition
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="table w-full table-zebra">
-          <thead>
+        <table className="table w-full border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+          <thead className="bg-[#F4A460] border-b-4 border-black text-gray-700">
             <tr>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th className="text-center">Actions</th>
+              <th className="border-black border-r-2 p-2 text-sm">Name</th>
+              <th className="border-black border-r-2 p-2 text-sm">Date</th>
+              <th className="border-black border-r-2 p-2 text-sm">Status</th>
+              <th className="text-center border-black p-2 text-sm">Actions</th>
             </tr>
           </thead>
           <tbody>
             {competitions.map((competition) => (
-              <tr key={competition.competition_id}>
-                <td>{competition.competition_name}</td>
-                <td>{new Date(competition.competition_date).toLocaleDateString()}</td>
-                <td>{competition.status}</td>
-                <td className="flex justify-center space-x-2">
-                  <button className="btn btn-warning btn-xs" onClick={() => handleEdit(competition)}>
-                    <FaEdit className="mr-1" />
-                    Edit
+              <tr key={competition.competition_id} className="hover:bg-[#F5F5DC]">
+                <td className="border-black border-r-2 p-2 text-sm">{competition.competition_name}</td>
+                <td className="border-black border-r-2 p-2 text-sm">{new Date(competition.competition_date).toLocaleDateString()}</td>
+                <td className="border-black border-r-2 p-2 text-sm">
+                  <span
+                    className={`px-2 py-1 rounded ${
+                      competition.status === "ongoing"
+                        ? "bg-yellow-300 text-yellow-900"
+                        : competition.status === "finished"
+                        ? "bg-green-300 text-green-900"
+                        : competition.status === "tko"
+                        ? "bg-red-300 text-red-900"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {competition.status}
+                  </span>
+                </td>
+                <td className="flex justify-center space-x-2 p-2 text-sm">
+                  <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={() => handleEdit(competition)}>
+                    <FaEdit />
                   </button>
-                  <button className="btn btn-error btn-xs" onClick={() => handleDelete(competition)}>
-                    <FaTrashAlt className="mr-1" />
-                    Delete
+                  <button className="btn bg-[#FF6347] text-black border-2 border-black hover:bg-[#FF4500] btn-xs" onClick={() => handleDelete(competition)}>
+                    <FaTrashAlt />
                   </button>
                 </td>
               </tr>
@@ -80,9 +92,7 @@ const Competitions = () => {
           </tbody>
         </table>
       </div>
-
       {isModalOpen && <CompetitionModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} competition={selectedCompetition} />}
-
       {isConfirmOpen && (
         <div className="modal modal-open">
           <div className="modal-box">

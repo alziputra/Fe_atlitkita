@@ -44,39 +44,39 @@ const Athletes = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Athletes</h2>
-        <button className="btn btn-primary btn-sm" onClick={handleAdd}>
-          <FaPlus className="mr-1" />
+        <button className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] hover:text-black btn-sm flex items-center" onClick={handleAdd}>
+          <FaPlus />
           Add Athlete
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="table w-full table-zebra">
-          <thead>
+        <table className="table w-full border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+          <thead className="bg-[#F4A460] border-b-4 border-black text-gray-700">
             <tr>
-              <th>Name</th>
-              <th>Team</th>
-              <th>Martial Art</th>
-              <th>Height</th>
-              <th>Weight</th>
-              <th className="text-center">Actions</th>
+              <th className="border-black border-r-2 p-2">No</th>
+              <th className="border-black border-r-2 p-2">Name</th>
+              <th className="border-black border-r-2 p-2">Team</th>
+              <th className="border-black border-r-2 p-2">Martial Art</th>
+              <th className="border-black border-r-2 p-2">Height</th>
+              <th className="border-black border-r-2 p-2">Weight</th>
+              <th className="text-center border-black p-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {athletes.map((athlete) => (
-              <tr key={athlete.athlete_id}>
-                <td>{athlete.name}</td>
-                <td>{athlete.team}</td>
-                <td>{athlete.martial}</td>
-                <td>{athlete.height} cm</td>
-                <td>{athlete.weight} kg</td>
-                <td className="flex justify-center space-x-2">
-                  <button className="btn btn-warning btn-xs" onClick={() => handleEdit(athlete)}>
-                    <FaEdit className="mr-1" />
-                    Edit
+            {athletes.map((athlete, index) => (
+              <tr key={athlete.athlete_id} className="hover:bg-[#F5F5DC]">
+                <td className="border-black border-r-2 p-2 text-center">{index + 1}</td>
+                <td className="border-black border-r-2 p-2">{athlete.name}</td>
+                <td className="border-black border-r-2 p-2">{athlete.team}</td>
+                <td className="border-black border-r-2 p-2">{athlete.martial}</td>
+                <td className="border-black border-r-2 p-2">{athlete.height} cm</td>
+                <td className="border-black border-r-2 p-2">{athlete.weight} kg</td>
+                <td className="flex justify-center space-x-2 p-2">
+                  <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={() => handleEdit(athlete)}>
+                    <FaEdit />
                   </button>
-                  <button className="btn btn-error btn-xs" onClick={() => handleDelete(athlete)}>
-                    <FaTrashAlt className="mr-1" />
-                    Delete
+                  <button className="btn bg-[#FF6347] text-black border-2 border-black hover:bg-[#FF4500] btn-xs" onClick={() => handleDelete(athlete)}>
+                    <FaTrashAlt />
                   </button>
                 </td>
               </tr>

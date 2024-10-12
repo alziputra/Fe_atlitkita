@@ -3,16 +3,18 @@ import { Link } from "react-router-dom";
 
 const Widget = ({ title, count, icon, link, color }) => {
   return (
-    <div className={`card bg-gradient-to-r  ${color} text-primary-content shadow-lg hover:shadow-xl transition-all transform hover:scale-105`}>
-      <div className="card-body text-center">
-        <div className="stat-figure">
-          <div className="text-4xl">{icon}</div>
+    <div className="flex justify-center items-center">
+      <div className={`card w-64 border-4 border-black bg-gradient-to-r ${color} text-primary-content shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] transition-all transform hover:scale-90`}>
+        <div className="card-body text-center p-4">
+          <div className="stat-figure">
+            <div className="text-4xl">{icon}</div>
+          </div>
+          <h2 className="text-3xl font-bold text-[#2c2a29]">{count}</h2>
+          <p className="text-xl text-black">{title}</p>
+          <Link to={link} className="text-sm text-white underline hover:text-gray-200 mt-2 block border-t-2 border-black pt-2">
+            Selengkapnya
+          </Link>
         </div>
-        <h2 className="text-3xl font-bold">{count}</h2>
-        <p>{title}</p>
-        <Link to={link} className="text-sm text-white underline hover:text-gray-200 mt-2 block">
-          Selengkapnya
-        </Link>
       </div>
     </div>
   );
