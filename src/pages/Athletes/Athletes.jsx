@@ -41,10 +41,10 @@ const Athletes = () => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Athletes</h2>
-        <button className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] hover:text-black btn-sm flex items-center" onClick={handleAdd}>
+        <button className="btn bg-[#FF6700] text-white border-2 border-[#CC5200] hover:bg-[#FF4500] hover:text-white btn-sm flex hover:shadow-[2px_2px_0px_rgba(255,255,255,1)] items-center" onClick={handleAdd}>
           <FaPlus />
           Add Athlete
         </button>
@@ -52,7 +52,7 @@ const Athletes = () => {
       <div className="overflow-x-auto">
         <table className="table w-full border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
           <thead className="bg-[#F4A460] border-b-4 border-black text-gray-700">
-            <tr>
+            <tr className="text-center">
               <th className="border-black border-r-2 p-2">No</th>
               <th className="border-black border-r-2 p-2">Name</th>
               <th className="border-black border-r-2 p-2">Team</th>
@@ -75,7 +75,7 @@ const Athletes = () => {
                   <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={() => handleEdit(athlete)}>
                     <FaEdit />
                   </button>
-                  <button className="btn bg-[#FF6347] text-black border-2 border-black hover:bg-[#FF4500] btn-xs" onClick={() => handleDelete(athlete)}>
+                  <button className="btn bg-[#a33521] text-white border-2 border-[#CC3E28] hover:bg-[#ee4b4b] hover:border-[#B22222] hover:text-white btn-xs" onClick={() => handleDelete(athlete)}>
                     <FaTrashAlt />
                   </button>
                 </td>

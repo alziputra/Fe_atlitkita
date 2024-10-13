@@ -23,7 +23,9 @@ const Header = () => {
           </div>
           {/* Menyesuaikan ukuran logo */}
           {/* <img src={Logo} alt="Logo" className="w-28 h-auto" /> */}
-          <h3 className="text-xl text-[#FF6700] font-bold">ATLIT KITA</h3>
+          <div className="h-12 border-black border-2 p-2.5 bg-[#31302f] hover:bg-[#fc9a59] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-[#fc9a59] font-bold hover:text-[#31302f]">ATLIT KITA</h3>
+          </div>
         </div>
 
         {/* Menu desktop */}

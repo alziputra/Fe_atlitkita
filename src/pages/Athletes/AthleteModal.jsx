@@ -48,14 +48,16 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-      <div className="modal-box w-80 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-white p-4">
+      <div className="modal-box mx-auto border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] p-4 bg-[#f3f4f6] max-h-[calc(100vh-8rem)] overflow-hidden">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-black">{athlete ? "Edit Athlete" : "Add Athlete"}</h2>
           <button className="btn bg-red-500 text-black border-2 border-black hover:bg-red-600" onClick={() => setIsOpen(false)}>
             <FaTimes />
           </button>
         </div>
-        <form onSubmit={handleSubmit}>
+
+        {/* Form yang bisa di-scroll */}
+        <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[60vh] pr-2">
           <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Name</span>
@@ -86,6 +88,8 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             </label>
             <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" placeholder="kg" value={weight} onChange={(e) => setWeight(e.target.value)} required />
           </div>
+
+          {/* Submit button */}
           <div className="modal-action">
             <button type="submit" className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] hover:text-black">
               {athlete ? "Save Changes" : "Add Athlete"}
