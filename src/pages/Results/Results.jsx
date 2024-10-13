@@ -52,12 +52,10 @@ const Results = () => {
                 <td className="border-black border-r-2 p-2">{new Date(result.created_at).toLocaleString()}</td>
                 <td className="flex justify-center space-x-2 p-2 text-sm">
                   <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={handlePrint}>
-                    <FaPrint className="mr-1" />
-                    Print
+                    <FaPrint />
                   </button>
                   <button className="btn bg-[#FF6347] text-black border-2 border-black hover:bg-[#FF4500] btn-xs" onClick={() => handleDelete(result)}>
-                    <FaTrashAlt className="mr-1" />
-                    Delete
+                    <FaTrashAlt />
                   </button>
                 </td>
               </tr>

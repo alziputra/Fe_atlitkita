@@ -45,7 +45,7 @@ const Matches = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Matches</h2>
         <button className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] btn-sm flex items-center" onClick={handleAdd}>
-          <FaPlus className="mr-1" />
+          <FaPlus />
           Add Match
         </button>
       </div>
@@ -72,12 +72,10 @@ const Matches = () => {
                 <td className="border-black border-r-2 p-2">{new Date(match.match_date).toLocaleString()}</td>
                 <td className="flex justify-center space-x-2 p-2 text-sm">
                   <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={() => handleEdit(match)}>
-                    <FaEdit className="mr-1" />
-                    Edit
+                    <FaEdit />
                   </button>
                   <button className="btn bg-[#a33521] text-white border-2 border-[#CC3E28] hover:bg-[#ee4b4b] hover:border-[#B22222] hover:text-white btn-xs" onClick={() => handleDelete(match)}>
-                    <FaTrashAlt className="mr-1" />
-                    Delete
+                    <FaTrashAlt />
                   </button>
                 </td>
               </tr>
