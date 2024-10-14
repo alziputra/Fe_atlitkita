@@ -46,7 +46,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-      <div className="modal-box mx-auto border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] p-4 bg-[#f3f4f6] max-h-[calc(100vh-8rem)] overflow-hidden">
+      <div className="modal-box mx-auto border-4 border-slate-700 shadow-[4px_4px_0px_rgba(0,0,0,1)] p-4 bg-[#f3f4f6] max-h-[calc(100vh-8rem)] overflow-hidden bg-gradient-to-r from-[#3ABEF9] to-[#6B8A7A]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-black">{competition ? "Edit Competition" : "Add Competition"}</h2>
           <button className="btn bg-red-500 text-black border-2 border-black hover:bg-red-600" onClick={() => setIsOpen(false)}>
@@ -56,23 +56,23 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
 
         {/* Form yang bisa di-scroll */}
         <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[60vh] pr-2">
-          <div className="form-control mb-4">
+          <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Competition Name</span>
             </label>
-            <input type="text" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={competitionName} onChange={(e) => setCompetitionName(e.target.value)} required />
+            <input type="text" className="input border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={competitionName} onChange={(e) => setCompetitionName(e.target.value)} required />
           </div>
-          <div className="form-control mb-4">
+          <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Competition Date</span>
             </label>
-            <input type="date" className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={competitionDate} onChange={(e) => setCompetitionDate(e.target.value)} required />
+            <input type="date" className="input border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={competitionDate} onChange={(e) => setCompetitionDate(e.target.value)} required />
           </div>
-          <div className="form-control mb-4">
+          <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Status</span>
             </label>
-            <select className="input border-4 border-black focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={status} onChange={(e) => setStatus(e.target.value)} required>
+            <select className="input border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={status} onChange={(e) => setStatus(e.target.value)} required>
               <option value="ongoing">Ongoing</option>
               <option value="finished">Finished</option>
               <option value="upcoming">Upcoming</option>

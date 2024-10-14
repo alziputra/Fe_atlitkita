@@ -1,17 +1,17 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { NavLinks } from "../components/NavLinks";
-import Logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
     <>
-      <header className="navbar bg-[#F5F5DC] border-black border-2 shadow-[4px_4px_0px_rgba(0,0,0,1)] lg:px-10 sm:px-2">
+      <header className="navbar bg-[#F4A460] border-black border-b-4 shadow-[8px_8px_0px_rgba(0,0,0,1)]">
         <div className="navbar-start gap-2">
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden border-black border-2 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden border-black border-2 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h8m-8 6h16" />
               </svg>
@@ -22,9 +22,10 @@ const Header = () => {
             </ul>
           </div>
           {/* Menyesuaikan ukuran logo */}
-          {/* <img src={Logo} alt="Logo" className="w-28 h-auto" /> */}
-          <div className="h-12 border-black border-2 p-2.5 bg-[#31302f] hover:bg-[#fc9a59] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] rounded-md">
-            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-[#fc9a59] font-bold hover:text-[#31302f]">ATLIT KITA</h3>
+          <div className="flex border-2 border-black hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <Link to="/dashboard" className="py-2 px-3 border-slate-800  text-black text-xl font-semibold">
+              ATLIT KITA
+            </Link>
           </div>
         </div>
 
