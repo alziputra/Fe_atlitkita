@@ -42,16 +42,16 @@ const Athletes = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-lg p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Athletes</h2>
-          <button className="btn bg-[#FF6700] text-white border-2 border-[#CC5200] hover:bg-[#FF4500] hover:text-white btn-sm flex hover:shadow-[2px_2px_0px_rgba(255,255,255,1)] items-center" onClick={handleAdd}>
-            <FaPlus />
+          <h2 className="text-2xl font-bold text-slate-600">Athletes</h2>
+          <button className="flex btn btn-sm bg-[#2ac34b] hover:bg-[#74f590] text-white hover:text-black border-2 border-black items-center hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]" onClick={handleAdd}>
+            <FaPlus/>
             Add Athlete
           </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="table w-full text-zinc-700 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] bg-gradient-to-r from-[#9CDBA6] to-[#468585]">
+          <table className="table w-full bg-[#F5F5DC] text-zinc-700 border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
             <thead className="bg-[#F4A460] border-b-4 border-black text-gray-700">
               <tr className="text-center">
                 <th className="border-black border-r-2 p-2">No</th>
@@ -65,7 +65,7 @@ const Athletes = () => {
             </thead>
             <tbody>
               {athletes.map((athlete, index) => (
-                <tr key={athlete.athlete_id} className="hover:bg-[#F5F5DC]">
+                <tr key={athlete.athlete_id} className="hover:bg-[#e3dd9a]">
                   <td className="border-black border-r-2 p-2 text-center">{index + 1}</td>
                   <td className="border-black border-r-2 p-2">{athlete.name}</td>
                   <td className="border-black border-r-2 p-2">{athlete.team}</td>
@@ -73,10 +73,10 @@ const Athletes = () => {
                   <td className="border-black border-r-2 p-2">{athlete.height} cm</td>
                   <td className="border-black border-r-2 p-2">{athlete.weight} kg</td>
                   <td className="flex justify-center space-x-2 p-2">
-                    <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={() => handleEdit(athlete)}>
+                    <button className="btn bg-[#378CE7] text-white border-2 border-[#378CE7] hover:border-black hover:bg-[#5aa9ff] btn-xs" onClick={() => handleEdit(athlete)}>
                       <FaEdit />
                     </button>
-                    <button className="btn bg-[#a33521] text-white border-2 border-[#CC3E28] hover:bg-[#ee4b4b] hover:border-[#B22222] hover:text-white btn-xs" onClick={() => handleDelete(athlete)}>
+                    <button className="btn bg-[#FF204E] text-white border-2 border-[#FF204E] hover:border-black hover:bg-[#ff5b7c] hover:text-white btn-xs" onClick={() => handleDelete(athlete)}>
                       <FaTrashAlt />
                     </button>
                   </td>

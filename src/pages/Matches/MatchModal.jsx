@@ -55,7 +55,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-      <div className="modal-box mx-auto border-4 border-slate-700 shadow-[4px_4px_0px_rgba(0,0,0,1)] p-4 bg-[#f3f4f6] max-h-[calc(100vh-8rem)] overflow-hidden bg-gradient-to-r from-[#FFBF78] to-[#F7418F]">
+      <div className="modal-box mx-auto border-2 border-slate-700 shadow-[4px_4px_0px_rgba(0,0,0,1)] p-4 max-h-[calc(100vh-8rem)] overflow-hidden bg-[#F5F5DC]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-black">{match ? "Edit Match" : "Add Match"}</h2>
           <button className="btn bg-red-500 text-black border-2 border-black hover:bg-red-600" onClick={() => setIsOpen(false)}>
@@ -69,7 +69,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Competition</span>
             </label>
-            <select className="select border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={competitionId} onChange={(e) => setCompetitionId(e.target.value)} required>
+            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={competitionId} onChange={(e) => setCompetitionId(e.target.value)} required>
               <option value="">Select Competition</option>
               {competitions.map((comp) => (
                 <option key={comp.competition_id} value={comp.competition_id}>
@@ -83,7 +83,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Athlete 1</span>
             </label>
-            <select className="select border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={athlete1Id} onChange={(e) => setAthlete1Id(e.target.value)} required>
+            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete1Id} onChange={(e) => setAthlete1Id(e.target.value)} required>
               <option value="">Select Athlete 1</option>
               {athletes.map((athlete) => (
                 <option key={athlete.athlete_id} value={athlete.athlete_id}>
@@ -97,7 +97,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Athlete 2</span>
             </label>
-            <select className="select border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={athlete2Id} onChange={(e) => setAthlete2Id(e.target.value)} required>
+            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete2Id} onChange={(e) => setAthlete2Id(e.target.value)} required>
               <option value="">Select Athlete 2</option>
               {athletes.map((athlete) => (
                 <option key={athlete.athlete_id} value={athlete.athlete_id}>
@@ -111,12 +111,12 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Match Date</span>
             </label>
-            <input type="date" className="input border-2 border-slate-700 bg-slate-50 focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]" value={matchDate} onChange={(e) => setMatchDate(e.target.value)} required />
+            <input type="date" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)]" value={matchDate} onChange={(e) => setMatchDate(e.target.value)} required />
           </div>
 
           {/* Submit button */}
           <div className="modal-action">
-            <button type="submit" className="btn bg-[#A6FAFF] text-black border-2 border-black hover:bg-[#79F7FF] hover:text-black">
+            <button type="submit" className="btn bg-[#A6FAFF] text-black border-2 border-slate-700 hover:bg-[#62f2f2] hover:text-black">
               {match ? "Save Changes" : "Add Match"}
             </button>
           </div>

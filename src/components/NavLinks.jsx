@@ -8,10 +8,10 @@ export const NavLinks = ({ user }) => {
   }, [user]);
 
   return (
-    <ul className="menu w-full lg:menu-horizontal bg-[#F5F5DC] border-black border-2 rounded-box gap-3 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+    <ul className="menu w-full lg:menu-horizontal bg-white border-black border-2 rounded-box gap-3 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
       {/* Tautan ke Dashboard, terlihat oleh semua peran */}
       <li className="w-full sm:w-auto">
-        <Link to="/dashboard" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#FF6700] hover:text-black rounded-lg hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+        <Link to="/dashboard" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
           Dashboard
         </Link>
       </li>
@@ -20,22 +20,22 @@ export const NavLinks = ({ user }) => {
       {user.role_name === "admin" && (
         <>
           <li className="w-full sm:w-auto">
-            <Link to="/athletes" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#FF6700] hover:text-white rounded-lg hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <Link to="/athletes" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               Athletes
             </Link>
           </li>
           <li className="w-full sm:w-auto">
-            <Link to="/competitions" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#FF6700] hover:text-white rounded-lg hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <Link to="/competitions" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               Competitions
             </Link>
           </li>
           <li className="w-full sm:w-auto">
-            <Link to="/matches" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#FF6700] hover:text-white rounded-lg hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <Link to="/matches" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               Matches
             </Link>
           </li>
           <li className="w-full sm:w-auto">
-            <Link to="/results" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#FF6700] hover:text-white rounded-lg hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <Link to="/results" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
               Results
             </Link>
           </li>
@@ -45,7 +45,7 @@ export const NavLinks = ({ user }) => {
       {/* Tautan hanya untuk Judge */}
       {user.role_name === "judge" && (
         <li className="w-full sm:w-auto">
-          <Link to="/scores" className="py-2 px-3 border-black border-2 bg-white text-black hover:bg-[#A6FAFF] hover:text-black rounded-lg shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+          <Link to="/scores" className="py-2 px-3 border-black border-2 bg-white text-lg font-medium hover:bg-[#FF6700] focus:bg-[#FF6700] text-slate-600 focus:text-white rounded-lg focus:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
             Scores
           </Link>
         </li>

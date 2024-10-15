@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Widget = ({ title, data, icon, link, color }) => {
   return (
     <div className="flex justify-center items-center">
-      <div className={`card w-64 border-4 border-black ${color} text-primary-content shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]`}>
+      <div className={`card w-64 border-2 border-black ${color} text-primary-content shadow-[2px_2px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_rgba(0,0,0,1)]`}>
         <div className="card-body text-center p-4">
           <div className="stat-figure">
             <div className="text-4xl">{icon}</div>

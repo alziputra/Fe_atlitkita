@@ -69,15 +69,16 @@ const Dashboard = () => {
       {errorMessage && <ErrorDisplay message={errorMessage} className="w-full mb-4" />}
 
       {/* Widget for Total Athletes */}
-      <Widget title="Total Athletes" data={athleteData ? athleteData.length : 0} icon={<FaRunning />} link="/athletes" color="bg-gradient-to-r from-[#9CDBA6] to-[#468585]" />
+      <Widget title="Total Athletes" data={athleteData ? athleteData.length : 0} icon={<FaRunning />} link="/athletes" color="bg-gradient-to-r from-[#F97316] to-[#10B981]" />
 
       {/* Widget for Total Users */}
-      <Widget title="Total Users" data={userData ? userData.length : 0} icon={<FaUser />} link="/users" color="bg-gradient-to-r from-[#E2BBE9] to-[#5A639C]" />
+      <Widget title="Total Users" data={userData ? userData.length : 0} icon={<FaUser />} link="/users" color="bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]" />
 
       {/* Widget for Total Competitions */}
-      <Widget title="Total Competitions" data={competitionData ? competitionData.length : 0} icon={<FaTrophy />} link="/competitions" color="bg-gradient-to-r from-[#3ABEF9] to-[#6B8A7A]" />
+      <Widget title="Total Competitions" data={competitionData ? competitionData.length : 0} icon={<FaTrophy />} link="/competitions" color="bg-gradient-to-r from-[#34D399] to-[#3B82F6]" />
 
-      <Widget title="Total Matches" data={matchData ? matchData.length : 0} icon={<FaRegListAlt />} link="/matches" color="bg-gradient-to-r from-[#FFBF78] to-[#F7418F]" />
+      {/* Widget for Total Matches */}
+      <Widget title="Total Matches" data={matchData ? matchData.length : 0} icon={<FaRegListAlt />} link="/matches" color="bg-gradient-to-r from-[#F87171] to-[#FBBF24]" />
     </div>
   );
 };

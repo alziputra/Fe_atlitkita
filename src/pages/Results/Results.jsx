@@ -25,12 +25,12 @@ const Results = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-lg p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Results</h2>
+          <h2 className="text-2xl font-bold text-slate-600">Results</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="table w-full border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+          <table className="table w-full bg-[#F5F5DC] text-zinc-700 border-4 border-black">
             <thead className="bg-[#F4A460] border-b-4 border-black text-gray-700">
               <tr>
                 <th className="border-black border-r-2 p-2">Competition Name</th>
@@ -53,11 +53,11 @@ const Results = () => {
                   <td className="border-black border-r-2 p-2">{result.athlete2_final_score}</td>
                   <td className="border-black border-r-2 p-2">{result.winner_name}</td>
                   <td className="border-black border-r-2 p-2">{new Date(result.created_at).toLocaleString()}</td>
-                  <td className="flex justify-center space-x-2 p-2 text-sm">
-                    <button className="btn bg-[#FFA07A] text-black border-2 border-black hover:bg-[#FF7F50] btn-xs" onClick={handlePrint}>
+                  <td className="flex justify-center space-x-2 p-2">
+                    <button className="btn bg-[#378CE7] text-white border-2 border-[#378CE7] hover:border-black hover:bg-[#5aa9ff] btn-xs" onClick={handlePrint}>
                       <FaPrint />
                     </button>
-                    <button className="btn bg-[#FF6347] text-black border-2 border-black hover:bg-[#FF4500] btn-xs" onClick={() => handleDelete(result)}>
+                    <button className="btn bg-[#FF204E] text-white border-2 border-[#FF204E] hover:border-black hover:bg-[#ff5b7c] hover:text-white btn-xs" onClick={() => handleDelete(result)}>
                       <FaTrashAlt />
                     </button>
                   </td>
