@@ -4,8 +4,8 @@ import { useScore } from "../../context/ScoreContext";
 import toast from "react-hot-toast";
 
 const Scores = () => {
-  const { athletes, matches, scores, error } = useScore();
-  const [selectedMatch, setSelectedMatch] = useState("");
+  const { athletes, competitions, scores ,error } = useScore();
+  const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedAthleteBlue, setSelectedAthleteBlue] = useState("");
   const [selectedAthleteRed, setSelectedAthleteRed] = useState("");
 
@@ -15,41 +15,48 @@ const Scores = () => {
     }
   }, [error]);
 
+  // Handle competition selection
+  const handleCompetitionChange = (e) => {
+    setSelectedCompetition(e.target.value);
+    setSelectedAthleteBlue(""); // Reset selected athlete blue
+    setSelectedAthleteRed(""); // Reset selected athlete red
+  };
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Penilaian Atlet</h2>
 
+      {/* Select Competition */}
       <div className="mb-4">
         <label className="block font-bold mb-2">Pilih Pertandingan</label>
-        <select
-          value={selectedMatch}
-          onChange={(e) => {
-            const selectedMatchId = parseInt(e.target.value);
-            setSelectedMatch(selectedMatchId);
-          }}
-          className="select select-bordered w-full"
-        >
+        <select value={selectedCompetition} onChange={handleCompetitionChange} className="select select-bordered w-full">
           <option value="" disabled>
             Pilih Pertandingan
           </option>
-          {matches.map((match) => (
-            <option key={match.match_id} value={match.match_id}>
-              {match.competition_name} - {match.athlete1_name} vs {match.athlete2_name}
+          {competitions.map((competition) => (
+            <option key={competition.competition_id} value={competition.competition_id}>
+              {competition.competition_name}
             </option>
           ))}
         </select>
       </div>
 
+      {/* Select Athletes */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block font-bold mb-2">Pilih Atlet Biru</label>
-          <select value={selectedAthleteBlue} onChange={(e) => setSelectedAthleteBlue(e.target.value)} className="select select-bordered w-full">
+          <select
+            value={selectedAthleteBlue}
+            onChange={(e) => setSelectedAthleteBlue(e.target.value)}
+            className="select select-bordered w-full"
+            disabled={!selectedCompetition} // Disable if no competition is selected
+          >
             <option value="" disabled>
               Pilih Atlet
             </option>
             {athletes.map((athlete) => (
               <option key={athlete.athlete_id} value={athlete.athlete_id}>
-                {athlete.athlete_name}
+                {athlete.name}
               </option>
             ))}
           </select>
@@ -57,19 +64,39 @@ const Scores = () => {
 
         <div>
           <label className="block font-bold mb-2">Pilih Atlet Merah</label>
-          <select value={selectedAthleteRed} onChange={(e) => setSelectedAthleteRed(e.target.value)} className="select select-bordered w-full">
+          <select
+            value={selectedAthleteRed}
+            onChange={(e) => setSelectedAthleteRed(e.target.value)}
+            className="select select-bordered w-full"
+            disabled={!selectedCompetition} // Disable if no competition is selected
+          >
             <option value="" disabled>
               Pilih Atlet
             </option>
             {athletes.map((athlete) => (
               <option key={athlete.athlete_id} value={athlete.athlete_id}>
-                {athlete.athlete_name}
+                {athlete.name}
               </option>
             ))}
           </select>
         </div>
       </div>
 
+      {/* Display Selected Choices */}
+      <div className="mb-4">
+        <h3 className="text-xl font-bold mb-4">Pilihan Anda:</h3>
+        <p>
+          <strong>Pertandingan:</strong> {selectedCompetition ? selectedCompetition : "Belum dipilih"}
+        </p>
+        <p>
+          <strong>Atlet Biru:</strong> {selectedAthleteBlue ? selectedAthleteBlue : "Belum dipilih"}
+        </p>
+        <p>
+          <strong>Atlet Merah:</strong> {selectedAthleteRed ? selectedAthleteRed : "Belum dipilih"}
+        </p>
+      </div>
+
+      {/* Render Skor dan Data Lainnya */}
       <h3 className="text-xl font-bold mb-4">Skor</h3>
       {scores.length === 0 ? (
         <p>Tidak ada skor untuk ditampilkan.</p>

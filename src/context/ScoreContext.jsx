@@ -1,5 +1,6 @@
 // src/context/ScoreContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -12,7 +13,7 @@ export const useScore = () => {
 export const ScoreProvider = ({ children }) => {
   const [data, setData] = useState({
     athletes: [],
-    matches: [],
+    competitions: [],
     scores: [],
     loading: false,
     error: null,
@@ -53,12 +54,15 @@ export const ScoreProvider = ({ children }) => {
       setData((prevData) => ({ ...prevData, loading: true }));
       await fetchData("scores", "scores");
       await fetchData("athletes", "athletes");
-      await fetchData("matches", "matches");
+      await fetchData("competitions", "competitions");
       setData((prevData) => ({ ...prevData, loading: false }));
     };
 
     fetchAllData();
   }, []);
-
   return <ScoreContext.Provider value={{ ...data }}>{children}</ScoreContext.Provider>;
+};
+
+ScoreProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
