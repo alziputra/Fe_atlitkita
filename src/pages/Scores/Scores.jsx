@@ -4,7 +4,7 @@ import { useScore } from "../../context/ScoreContext";
 import toast from "react-hot-toast";
 
 const Scores = () => {
-  const { athletes, competitions, scores ,error } = useScore();
+  const { athletes, competitions, scores, error } = useScore();
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedAthleteBlue, setSelectedAthleteBlue] = useState("");
   const [selectedAthleteRed, setSelectedAthleteRed] = useState("");
@@ -21,6 +21,10 @@ const Scores = () => {
     setSelectedAthleteBlue(""); // Reset selected athlete blue
     setSelectedAthleteRed(""); // Reset selected athlete red
   };
+
+  // Filter athletes based on team
+  const athletesBlueTeam = athletes.filter((athlete) => athlete.team === "Biru");
+  const athletesRedTeam = athletes.filter((athlete) => athlete.team === "Merah");
 
   return (
     <div className="p-6">
@@ -54,7 +58,7 @@ const Scores = () => {
             <option value="" disabled>
               Pilih Atlet
             </option>
-            {athletes.map((athlete) => (
+            {athletesBlueTeam.map((athlete) => (
               <option key={athlete.athlete_id} value={athlete.athlete_id}>
                 {athlete.name}
               </option>
@@ -73,7 +77,7 @@ const Scores = () => {
             <option value="" disabled>
               Pilih Atlet
             </option>
-            {athletes.map((athlete) => (
+            {athletesRedTeam.map((athlete) => (
               <option key={athlete.athlete_id} value={athlete.athlete_id}>
                 {athlete.name}
               </option>

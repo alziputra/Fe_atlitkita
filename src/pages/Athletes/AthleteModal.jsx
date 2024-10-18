@@ -68,7 +68,13 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             <label className="label">
               <span className="label-text text-black">Team</span>
             </label>
-            <input type="text" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={team} onChange={(e) => setTeam(e.target.value)} required />
+            <select className="select bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={team} onChange={(e) => setTeam(e.target.value)} required>
+              <option value="" disabled>
+                Select a team
+              </option>
+              <option value="Merah">Merah</option>
+              <option value="Biru">Biru</option>
+            </select>
           </div>
           <div className="form-control mb-2">
             <label className="label">
@@ -80,13 +86,27 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             <label className="label">
               <span className="label-text text-black">Height</span>
             </label>
-            <input type="text" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" placeholder="cm" value={height} onChange={(e) => setHeight(e.target.value)} required />
+            <input
+              type="text"
+              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              placeholder="cm"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              required
+            />
           </div>
           <div className="form-control mb-4">
             <label className="label">
               <span className="label-text text-black">Weight</span>
             </label>
-            <input type="text" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" placeholder="kg" value={weight} onChange={(e) => setWeight(e.target.value)} required />
+            <input
+              type="text"
+              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              placeholder="kg"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              required
+            />
           </div>
 
           {/* Submit button */}
