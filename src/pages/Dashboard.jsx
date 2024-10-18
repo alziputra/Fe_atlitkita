@@ -2,47 +2,26 @@ import { useEffect, useState, useCallback } from "react";
 import { FaUser, FaRunning, FaTrophy, FaRegListAlt } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Widget from "../components/Widget";
-import ErrorDisplay from "../components/ErrorDisplay";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState([]);
   const [athleteData, setAthleteData] = useState([]);
   const [competitionData, setCompetitionData] = useState([]);
   const [matchData, setMatchData] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const refreshAccessToken = async (refreshToken) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refresh`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
-    const data = await response.json();
-    if (data.accessToken) {
-      Cookies.set("accessToken", data.accessToken);
-    } else {
-      throw new Error("Refresh token expired");
-    }
-  };
 
   const fetchDataWithAuth = useCallback(async (endpoint) => {
-    const token = Cookies.get("accessToken");
+    const token = Cookies.get("Token"); // Mengganti accessToken dengan Token
     const response = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     if (response.status === 401) {
-      const refreshToken = Cookies.get("refreshToken");
-      if (refreshToken) {
-        await refreshAccessToken(refreshToken);
-        return fetchDataWithAuth(endpoint); // Retry fetch setelah refresh
-      } else {
-        throw new Error("Unauthorized");
-      }
+      throw new Error("Unauthorized"); // Langsung melempar error jika token tidak valid
     }
+
     return response.json();
   }, []); // Gunakan array kosong untuk memastikan `fetchDataWithAuth` tidak berubah
 
@@ -57,7 +36,6 @@ const Dashboard = () => {
         setMatchData(dataMatch.data || []);
       } catch (error) {
         console.error("Failed to fetch data:", error);
-        setErrorMessage("Failed to fetch data");
       }
     };
 
@@ -66,19 +44,17 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-wrap justify-center items-start py-4 gap-4 lg:gap-8">
-      {errorMessage && <ErrorDisplay message={errorMessage} className="w-full mb-4" />}
-
       {/* Widget for Total Athletes */}
-      <Widget title="Total Athletes" data={athleteData ? athleteData.length : 0} icon={<FaRunning />} link="/athletes" color="bg-gradient-to-r from-[#F97316] to-[#10B981]" />
+      <Widget title="Total Athletes" data={athleteData.length} icon={<FaRunning />} link="/athletes" color="bg-gradient-to-r from-[#F97316] to-[#10B981]" />
 
       {/* Widget for Total Users */}
-      <Widget title="Total Users" data={userData ? userData.length : 0} icon={<FaUser />} link="/users" color="bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]" />
+      <Widget title="Total Users" data={userData.length} icon={<FaUser />} link="/users" color="bg-gradient-to-r from-[#8B5CF6] to-[#EC4899]" />
 
       {/* Widget for Total Competitions */}
-      <Widget title="Total Competitions" data={competitionData ? competitionData.length : 0} icon={<FaTrophy />} link="/competitions" color="bg-gradient-to-r from-[#34D399] to-[#3B82F6]" />
+      <Widget title="Total Competitions" data={competitionData.length} icon={<FaTrophy />} link="/competitions" color="bg-gradient-to-r from-[#34D399] to-[#3B82F6]" />
 
       {/* Widget for Total Matches */}
-      <Widget title="Total Matches" data={matchData ? matchData.length : 0} icon={<FaRegListAlt />} link="/matches" color="bg-gradient-to-r from-[#F87171] to-[#FBBF24]" />
+      <Widget title="Total Matches" data={matchData.length} icon={<FaRegListAlt />} link="/matches" color="bg-gradient-to-r from-[#F87171] to-[#FBBF24]" />
     </div>
   );
 };

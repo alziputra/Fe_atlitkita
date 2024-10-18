@@ -10,7 +10,7 @@ export const MatchProvider = ({ children }) => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = Cookies.get("accessToken");
+  const token = Cookies.get("Token"); // Mengganti accessToken dengan Token
   const location = useLocation();
 
   // Fetch matches data from API
@@ -27,7 +27,7 @@ export const MatchProvider = ({ children }) => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/matches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setMatches(response.data.data); // Ambil data dari response
+        setMatches(response.data.data || []); // Ambil data dari response
         setError(null); // Reset error jika sukses
       } catch (error) {
         setError("Failed to fetch matches data.");

@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -23,20 +24,21 @@ const useLogin = (setUser, navigate) => {
         password,
       });
 
-      // Pastikan respon dari server memiliki accessToken dan refreshToken
-      const { accessToken, refreshToken } = res.data;
+      // Pastikan respon dari server memiliki Token
+      const { Token } = res.data;
 
-      if (!accessToken || !refreshToken) {
-        throw new Error("Access token atau refresh token tidak ditemukan di response.");
+      if (!Token) {
+        throw new Error("Token tidak ditemukan di response.");
       }
 
       // Simpan token di cookie
-      Cookies.set("accessToken", accessToken);
-      Cookies.set("refreshToken", refreshToken);
+      Cookies.set("Token", Token, { secure: true, sameSite: "Strict" });
 
-      // Ambil data user dan simpan di state
+      // Dekode Token untuk mengambil informasi user
+      const decodedToken = jwtDecode(Token);
+      setUser(decodedToken); // Simpan data user di state
+
       toast.success("Login berhasil.");
-      await fetchUser(setUser);
 
       // Redirect ke dashboard
       navigate("/dashboard");
@@ -48,44 +50,38 @@ const useLogin = (setUser, navigate) => {
   return { login };
 };
 
+// Fungsi untuk mengambil data user dari token
+const getUserFromToken = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    // Optional: Periksa apakah token sudah kedaluwarsa
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp && decoded.exp < currentTime) {
+      return null;
+    }
+    return decoded;
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return null;
+  }
+};
+
 // Fungsi untuk mengambil data user
 const fetchUser = async (setUser) => {
-  let token = Cookies.get("accessToken");
-  const refreshToken = Cookies.get("refreshToken");
+  let token = Cookies.get("Token");
 
   // Hanya ambil data user jika token tersedia
   if (!token) return;
 
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setUser(res.data.data); // Simpan data user di state
-  } catch (error) {
-    if (error.response && error.response.status === 401 && refreshToken) {
-      // Jika accessToken kadaluarsa, coba gunakan refreshToken
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
-          headers: { Authorization: `Bearer ${refreshToken}` },
-        });
-
-        // Simpan accessToken yang baru didapat dari refreshToken
-        const { accessToken } = res.data;
-        Cookies.set("accessToken", accessToken);
-
-        // Ulangi permintaan dengan accessToken yang baru
-        const retryRes = await axios.get(`${import.meta.env.VITE_API_URL}/users/me`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setUser(retryRes.data);
-      } catch {
-        // Jika refreshToken juga gagal atau kadaluarsa
-        handleTokenExpired();
-      }
-    } else {
-      handleTokenExpired(); // Jika kedua token sudah habis
-    }
+  // Dekode token untuk mendapatkan user data
+  const decodedUser = getUserFromToken(token);
+  if (decodedUser) {
+    setUser(decodedUser);
+    return;
   }
+
+  // Jika token tidak valid atau kedaluwarsa, tangani token yang kadaluarsa
+  handleTokenExpired();
 };
 
 // Fungsi untuk menangani token yang kadaluarsa
@@ -95,11 +91,9 @@ const handleTokenExpired = () => {
       <ModalConfirmation
         message="Masa aktif token sudah habis. Silakan login kembali."
         onConfirm={() => {
-          Cookies.remove("accessToken");
-          Cookies.remove("refreshToken");
+          Cookies.remove("Token");
           toast.dismiss(t.id);
-          Navigate("/login"); // Redirect ke halaman login
-          window.location.reload(); // Reload halaman,
+          window.location.href = "/login"; // Redirect ke halaman login
         }}
       />
     ),
@@ -144,8 +138,7 @@ const useLogout = (setUser, navigate) => {
         <ModalConfirmation
           message="Apakah Anda ingin logout?"
           onConfirm={() => {
-            Cookies.remove("accessToken");
-            Cookies.remove("refreshToken");
+            Cookies.remove("Token");
             setUser(null); // Reset state user
             toast.dismiss(t.id);
             navigate("/login"); // Arahkan ke halaman login
@@ -168,9 +161,9 @@ export const AuthProvider = ({ children }) => {
   const { login } = useLogin(setUser, navigate);
   const { logout } = useLogout(setUser, navigate);
 
-  // panggil fetchUser jika token tersedia
+  // Panggil fetchUser jika token tersedia
   useEffect(() => {
-    const token = Cookies.get("accessToken");
+    const token = Cookies.get("Token");
     if (token) {
       fetchUser(setUser);
     }

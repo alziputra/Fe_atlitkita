@@ -10,7 +10,7 @@ export const ResultProvider = ({ children }) => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = Cookies.get("accessToken");
+  const token = Cookies.get("Token");
   const location = useLocation();
 
   // Fetch results data from API
@@ -18,98 +18,61 @@ export const ResultProvider = ({ children }) => {
     const fetchResults = async () => {
       if (!token || location.pathname !== "/results") {
         setLoading(false);
-        return;
+        return; // Tidak fetch data jika token tidak ada atau bukan di halaman /results
       }
+
       try {
         setLoading(true);
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/results`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setResults(response.data.data);
+
+        console.log(response.data); // Debugging untuk melihat data yang diterima
+        setResults(response.data.data || []); // Menangani jika data tidak ada
         setError(null);
       } catch (error) {
         setError("Failed to fetch results data.");
         console.error(error);
       } finally {
         setLoading(false);
+      }
     };
-    
+
+    fetchResults();
+  }, [token, location.pathname]); // Tambahkan dependency untuk memantau perubahan
+
+  // Delete result
+  const deleteResult = async (id) => {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/results/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.data.status === "success") {
+        setResults((prev) => prev.filter((result) => result.result_id !== id));
+        setError(null);
+      } else {
+        setError(response.data.message); // Jika ada error dari server
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message); // Menampilkan pesan error dari server
+      } else {
+        setError("Failed to delete result."); // Pesan default jika tidak ada pesan dari server
+      }
+      console.error(err);
+    }
   };
-  fetchResults();
-}, [token, location.pathname]);
 
-// Add new result
-const addResult = async (result) => {
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/results`, result, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const newResult = response.data.data;
-    
-    if (!newResult.result_id) {
-      throw new Error("Result ID is missing in response");
-    }
-    
-    setResults((prev) => [...prev, newResult]);
-    setError(null);
-  } catch (err) {
-    setError("Failed to add result.");
-    console.error(err);
-  }
-};
-
-// Edit result
-const editResult = async (id, updatedResult) => {
-  try {
-    await axios.put(`${import.meta.env.VITE_API_URL}/results/${id}`, updatedResult, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setResults((prev) =>
-      prev.map((result) =>
-        result.result_id === id ? { ...result, ...updatedResult } : result
-  )
-);
-setError(null);
-} catch (err) {
-  setError("Failed to update result.");
-  console.error(err);
-}
-};
-
-// Delete result
-const deleteResult = async (id) => {
-  try {
-    const response = await axios.delete(`${import.meta.env.VITE_API_URL}/results/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    
-    if (response.data.status === "success") {
-      setResults((prev) => prev.filter((result) => result.result_id !== id));
-      setError(null);
-    } else {
-      setError(response.data.message);
-    }
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.message) {
-      setError(err.response.data.message);
-    } else {
-      setError("Failed to delete result.");
-    }
-    console.error(err);
-  }
-};
-
-return (
-  <ResultContext.Provider
-  value={{
-    results,
-    loading,
-    error,
-    addResult,
-    editResult,
-    deleteResult,
-  }}
-  >
+  return (
+    <ResultContext.Provider
+      value={{
+        results,
+        loading,
+        error,
+        deleteResult,
+      }}
+    >
       {children}
     </ResultContext.Provider>
   );
