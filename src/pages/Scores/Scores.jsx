@@ -1,13 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import { useScore } from "../../context/ScoreContext";
-import axios from "axios";
+// src/pages/Scores/Scores.jsx
 import { useEffect, useState } from "react";
+import { useScore } from "../../context/ScoreContext";
 import toast from "react-hot-toast";
-import Cookies from "js-cookie";
 
 const Scores = () => {
-  const navigate = useNavigate();
-  const { athletes, matches, error } = useScore();
+  const { athletes, matches, scores, error } = useScore();
   const [selectedMatch, setSelectedMatch] = useState("");
   const [selectedAthleteBlue, setSelectedAthleteBlue] = useState("");
   const [selectedAthleteRed, setSelectedAthleteRed] = useState("");
@@ -18,36 +15,6 @@ const Scores = () => {
     }
   }, [error]);
 
-  const handleStartScoring = async () => {
-    if (!selectedMatch || !selectedAthleteBlue || !selectedAthleteRed) {
-      toast.error("Pilih pertandingan dan kedua atlet terlebih dahulu.");
-      return;
-    }
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/scores`,
-        {
-          match_id: selectedMatch,
-          athlete_blue_id: selectedAthleteBlue,
-          athlete_red_id: selectedAthleteRed,
-        },
-        {
-          headers: { Authorization: `Bearer ${Cookies.get("accessToken")}` },
-        }
-      );
-
-      toast.success(response.data.message);
-      navigate("/results");
-    } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Failed to start scoring.");
-      }
-    }
-  };
-
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Penilaian Atlet</h2>
@@ -57,17 +24,8 @@ const Scores = () => {
         <select
           value={selectedMatch}
           onChange={(e) => {
-            const selectedMatchId = parseInt(e.target.value); // Pastikan ID di-convert ke angka
-            setSelectedMatch(selectedMatchId); // Update state dengan ID pertandingan yang dipilih
-
-            // Temukan detail pertandingan berdasarkan ID
-            const selectedMatch = matches.find((match) => match.match_id === selectedMatchId);
-
-            if (selectedMatch) {
-              console.log("Pertandingan yang dipilih:", selectedMatch.match_name); // Cetak nama pertandingan yang dipilih
-            } else {
-              console.log("Pertandingan tidak ditemukan");
-            }
+            const selectedMatchId = parseInt(e.target.value);
+            setSelectedMatch(selectedMatchId);
           }}
           className="select select-bordered w-full"
         >
@@ -76,7 +34,7 @@ const Scores = () => {
           </option>
           {matches.map((match) => (
             <option key={match.match_id} value={match.match_id}>
-              {match.match_name}
+              {match.competition_name} - {match.athlete1_name} vs {match.athlete2_name}
             </option>
           ))}
         </select>
@@ -112,9 +70,35 @@ const Scores = () => {
         </div>
       </div>
 
-      <button className="btn btn-primary w-full" onClick={handleStartScoring}>
-        Nilai Atlet
-      </button>
+      <h3 className="text-xl font-bold mb-4">Skor</h3>
+      {scores.length === 0 ? (
+        <p>Tidak ada skor untuk ditampilkan.</p>
+      ) : (
+        <table className="table-auto w-full">
+          <thead>
+            <tr>
+              <th className="border px-4 py-2">Atlet</th>
+              <th className="border px-4 py-2">Poin Tendangan</th>
+              <th className="border px-4 py-2">Poin Pukulan</th>
+              <th className="border px-4 py-2">Poin Elbow</th>
+              <th className="border px-4 py-2">Poin Lutut</th>
+              <th className="border px-4 py-2">Poin Lemparan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {scores.map((score) => (
+              <tr key={score.score_id}>
+                <td className="border px-4 py-2">{score.athlete_name}</td>
+                <td className="border px-4 py-2">{score.kick_score}</td>
+                <td className="border px-4 py-2">{score.punch_score}</td>
+                <td className="border px-4 py-2">{score.elbow_score}</td>
+                <td className="border px-4 py-2">{score.knee_score}</td>
+                <td className="border px-4 py-2">{score.throw_score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

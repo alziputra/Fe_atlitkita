@@ -1,98 +1,64 @@
-import { createContext, useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
+// src/context/ScoreContext.jsx
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useLocation } from "react-router-dom";
 
 const ScoreContext = createContext();
 
-const ScoreProvider = ({ children }) => {
-  const [scores, setScores] = useState([]);
-  const [athletes, setAthletes] = useState([]);
-  const [matches, setMatches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const location = useLocation();
+export const useScore = () => {
+  return useContext(ScoreContext);
+};
 
-  const fetchData = async (endpoint, setData) => {
-    const token = Cookies.get("accessToken");
-    if (!token) return;
+export const ScoreProvider = ({ children }) => {
+  const [data, setData] = useState({
+    athletes: [],
+    matches: [],
+    scores: [],
+    loading: false,
+    error: null,
+  });
 
-    try {
-      setLoading(true);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setData(response.data.data);
-      setError(null);
-    } catch (error) {
-      if (error.response) {
-        setError(`Failed to fetch ${endpoint} data: ${error.response.data.message || error.message}`);
-      } else {
-        setError(`Network error: Failed to fetch ${endpoint} data.`);
-      }
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch scores, athletes, and matches data from API
-  useEffect(() => {
-    if (location.pathname === "/scores") {
-      fetchData("scores", setScores);
-    }
-    fetchData("athletes", setAthletes);
-    fetchData("matches", setMatches);
-  }, [location.pathname]);
-
-  // Add new score
-  const addScore = async (score) => {
-    const token = Cookies.get("accessToken");
+  // Function to fetch data from API
+  const fetchData = async (endpoint, key) => {
+    const token = Cookies.get("Token");
     if (!token) {
-      setError("Authentication required.");
+      setData((prevData) => ({
+        ...prevData,
+        error: "Token is missing",
+      }));
       return;
     }
 
     try {
-      setLoading(true);
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/scores`, score, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      const newScore = response.data.data;
 
-      if (!newScore || !newScore.score_id) {
-        throw new Error("Score ID is missing in response");
-      }
-
-      setScores((prev) => [...prev, newScore]);
-      setError(null);
-    } catch (error) {
-      if (error.response) {
-        setError(`Failed to add score: ${error.response.data.message || error.message}`);
-      } else {
-        setError("Network error: Failed to add score.");
-      }
-      console.error(error);
-    } finally {
-      setLoading(false);
+      setData((prevData) => ({
+        ...prevData,
+        [key]: response.data.data, // Assuming data is in response.data.data
+      }));
+    } catch (err) {
+      setData((prevData) => ({
+        ...prevData,
+        error: err.message,
+      }));
     }
   };
 
-  return <ScoreContext.Provider value={{ scores, athletes, matches, loading, error, addScore }}>{children}</ScoreContext.Provider>;
-};
+  useEffect(() => {
+    const fetchAllData = async () => {
+      setData((prevData) => ({ ...prevData, loading: true }));
+      await fetchData("scores", "scores");
+      await fetchData("athletes", "athletes");
+      await fetchData("matches", "matches");
+      setData((prevData) => ({ ...prevData, loading: false }));
+    };
 
-ScoreProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+    fetchAllData();
+  }, []);
 
-// Custom hook to use the ScoreContext
-const useScore = () => {
-  const context = useContext(ScoreContext);
-  if (!context) {
-    throw new Error("useScore must be used within a ScoreProvider");
-  }
-  return context;
+  return <ScoreContext.Provider value={{ ...data }}>{children}</ScoreContext.Provider>;
 };
-
-export { ScoreContext, ScoreProvider, useScore };

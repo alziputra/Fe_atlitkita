@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [matchData, setMatchData] = useState([]);
 
   const fetchDataWithAuth = useCallback(async (endpoint) => {
-    const token = Cookies.get("Token"); // Mengganti accessToken dengan Token
+    const token = Cookies.get("Token");
     const response = await fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
       method: "GET",
       headers: {
