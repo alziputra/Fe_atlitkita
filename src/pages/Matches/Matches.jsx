@@ -56,8 +56,8 @@ const Matches = () => {
               <tr className="text-center">
                 <th className="border-black border-r-2 p-2">No</th>
                 <th className="border-black border-r-2 p-2">Competition</th>
-                <th className="border-black border-r-2 p-2">Athlete 1</th>
-                <th className="border-black border-r-2 p-2">Athlete 2</th>
+                <th className="border-black border-r-2 p-2 ">Athlete 1</th>
+                <th className="border-black border-r-2 p-2 ">Athlete 2</th>
                 <th className="border-black border-r-2 p-2">Match Date</th>
                 <th className="text-center border-black p-2">Actions</th>
               </tr>
@@ -67,8 +67,8 @@ const Matches = () => {
                 <tr key={match.match_id} className="hover:bg-[#e3dd9a]">
                   <td className="border-black border-r-2 p-2 text-center">{index + 1}</td>
                   <td className="border-black border-r-2 p-2">{match.competition_name}</td>
-                  <td className="border-black border-r-2 p-2">{match.athlete1_name}</td>
-                  <td className="border-black border-r-2 p-2">{match.athlete2_name}</td>
+                  <td className="border-black border-r-2 p-2 text-blue-600 font-medium">{match.athlete1_name}</td>
+                  <td className="border-black border-r-2 p-2 text-red-600 font-medium">{match.athlete2_name}</td>
                   <td className="border-black border-r-2 p-2">{new Date(match.match_date).toLocaleString()}</td>
                   <td className="flex justify-center space-x-2 p-2">
                     <button className="btn bg-[#378CE7] text-white border-2 border-[#378CE7] hover:border-black hover:bg-[#5aa9ff] btn-xs" onClick={() => handleEdit(match)}>

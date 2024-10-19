@@ -56,6 +56,7 @@ const Competitions = () => {
               <tr className="text-center">
                 <th className="border-black border-r-2 p-2">No</th>
                 <th className="border-black border-r-2 p-2">Name</th>
+                <th className="border-black border-r-2 p-2">Location</th>
                 <th className="border-black border-r-2 p-2">Date</th>
                 <th className="border-black border-r-2 p-2">Status</th>
                 <th className="border-black p-2">Actions</th>
@@ -66,6 +67,7 @@ const Competitions = () => {
                 <tr key={competition.competition_id} className="hover:bg-[#e3dd9a]">
                   <td className="border-black border-r-2 p-2 text-center">{index + 1}</td>
                   <td className="border-black border-r-2 p-2">{competition.competition_name}</td>
+                  <td className="border-black border-r-2 p-2">{competition.location}</td>
                   <td className="border-black border-r-2 p-2">{new Date(competition.competition_date).toLocaleDateString()}</td>
                   <td className="border-black border-r-2 p-2 text-center">
                     <span

@@ -7,16 +7,19 @@ import toast from "react-hot-toast";
 const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
   const { addCompetition, editCompetition } = useContext(CompetitionContext);
   const [competitionName, setCompetitionName] = useState("");
+  const [Location, setLocation] = useState("");
   const [competitionDate, setCompetitionDate] = useState("");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (competition) {
       setCompetitionName(competition.competition_name);
+      setLocation(competition.location);
       setCompetitionDate(new Date(competition.competition_date).toISOString().slice(0, 10)); // Convert to YYYY-MM-DD format
       setStatus(competition.status);
     } else {
       setCompetitionName("");
+      setLocation("");
       setCompetitionDate("");
       setStatus("");
     }
@@ -26,6 +29,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
     e.preventDefault();
     const competitionData = {
       competition_name: competitionName,
+      location: Location,
       competition_date: competitionDate,
       status,
     };
@@ -70,6 +74,18 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
           </div>
           <div className="form-control mb-2">
             <label className="label">
+              <span className="label-text text-black">Location</span>
+            </label>
+            <input
+              type="text"
+              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              value={Location}
+              onChange={(e) => setLocation(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-control mb-2">
+            <label className="label">
               <span className="label-text text-black">Competition Date</span>
             </label>
             <input
@@ -109,6 +125,7 @@ CompetitionModal.propTypes = {
   competition: PropTypes.shape({
     competition_id: PropTypes.number,
     competition_name: PropTypes.string,
+    location: PropTypes.string,
     competition_date: PropTypes.string,
     status: PropTypes.string,
   }),

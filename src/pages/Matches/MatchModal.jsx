@@ -16,6 +16,10 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
   const [athlete2Id, setAthlete2Id] = useState("");
   const [matchDate, setMatchDate] = useState("");
 
+  // Filter athletes based on team
+  const athletesBlueTeam = athletes.filter((athlete) => athlete.team === "Biru");
+  const athletesRedTeam = athletes.filter((athlete) => athlete.team === "Merah");
+
   useEffect(() => {
     if (match) {
       setCompetitionId(match.competition_id);
@@ -83,9 +87,9 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Athlete 1</span>
             </label>
-            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete1Id} onChange={(e) => setAthlete1Id(e.target.value)} required>
-              <option value="">Select Athlete 1</option>
-              {athletes.map((athlete) => (
+            <select className="input bg-blue-400 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete1Id} onChange={(e) => setAthlete1Id(e.target.value)} required>
+              <option value="">Select Blue Athlete</option>
+              {athletesBlueTeam.map((athlete) => (
                 <option key={athlete.athlete_id} value={athlete.athlete_id}>
                   {athlete.name}
                 </option>
@@ -97,9 +101,9 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
             <label className="label">
               <span className="label-text text-black">Athlete 2</span>
             </label>
-            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete2Id} onChange={(e) => setAthlete2Id(e.target.value)} required>
-              <option value="">Select Athlete 2</option>
-              {athletes.map((athlete) => (
+            <select className="input bg-red-400 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={athlete2Id} onChange={(e) => setAthlete2Id(e.target.value)} required>
+              <option value="">Select Red Athlete</option>
+              {athletesRedTeam.map((athlete) => (
                 <option key={athlete.athlete_id} value={athlete.athlete_id}>
                   {athlete.name}
                 </option>

@@ -12,8 +12,7 @@ export const useScore = () => {
 
 export const ScoreProvider = ({ children }) => {
   const [data, setData] = useState({
-    athletes: [],
-    competitions: [],
+    matches: [],
     scores: [],
     loading: false,
     error: null,
@@ -54,7 +53,7 @@ export const ScoreProvider = ({ children }) => {
       setData((prevData) => ({ ...prevData, loading: true }));
       await fetchData("scores", "scores");
       await fetchData("athletes", "athletes");
-      await fetchData("competitions", "competitions");
+      await fetchData("matches", "matches");
       setData((prevData) => ({ ...prevData, loading: false }));
     };
 
