@@ -11,14 +11,19 @@ export const AthleteProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const token = Cookies.get("Token"); // Mengganti accessToken dengan Token
+  const token = Cookies.get("Token"); // Ambil token dari cookie
 
   // Fetch athletes data from API
   useEffect(() => {
     const fetchAthletes = async () => {
-      if (!token || location.pathname !== "/athletes") {
+      if (!token) {
+        setError("Token tidak tersedia.");
         setLoading(false);
-        return; // Tidak fetch data jika token tidak ada atau bukan di halaman /athletes
+        return; // Tidak fetch data jika token tidak ada
+      }
+      if (location.pathname !== "/athletes") {
+        setLoading(false);
+        return; // Hanya fetch data jika berada di halaman /athletes
       }
 
       try {
@@ -26,21 +31,25 @@ export const AthleteProvider = ({ children }) => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/athletes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setAthletes(response.data.data);
+        setAthletes(response.data.data || []); // Ambil data dari response
         setError(null); // Bersihkan error jika sukses
       } catch (error) {
         setError("Failed to fetch athletes data.");
-        console.error(error);
+        console.error("Fetch error:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Matikan loading setelah selesai
       }
     };
 
     fetchAthletes();
-  }, [token, location.pathname]); // Tambahkan location.pathname sebagai dependency untuk memantau halaman aktif
+  }, [token, location.pathname]); // Tambahkan token dan lokasi sebagai dependency
 
   // Add new athlete
   const addAthlete = async (athlete) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/athletes`, athlete, {
         headers: { Authorization: `Bearer ${token}` },
@@ -51,16 +60,20 @@ export const AthleteProvider = ({ children }) => {
         throw new Error("Athlete ID is missing in response");
       }
 
-      setAthletes((prev) => [...prev, newAthlete]); // Tambahkan data baru ke list atlet
+      setAthletes((prev) => [...prev, newAthlete]); // Tambahkan atlet baru ke state
       setError(null); // Bersihkan error jika sukses
     } catch (err) {
       setError("Failed to add athlete.");
-      console.error(err);
+      console.error("Add error:", err);
     }
   };
 
   // Edit athlete
   const editAthlete = async (id, updatedAthlete) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/athletes/${id}`, updatedAthlete, {
         headers: { Authorization: `Bearer ${token}` },
@@ -73,35 +86,34 @@ export const AthleteProvider = ({ children }) => {
       setError(null); // Bersihkan error jika sukses
     } catch (err) {
       setError("Failed to update athlete.");
-      console.error(err);
+      console.error("Update error:", err);
     }
   };
 
   // Delete athlete
   const deleteAthlete = async (id) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
-      // Kirim permintaan DELETE ke server
       const response = await axios.delete(`${import.meta.env.VITE_API_URL}/athletes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Cek status di dalam respons server
       if (response.data.status === "success") {
-        // Jika penghapusan berhasil, hapus data dari state
-        setAthletes((prev) => prev.filter((athlete) => athlete.athlete_id !== id));
+        setAthletes((prev) => prev.filter((athlete) => athlete.athlete_id !== id)); // Hapus atlet dari state
         setError(null); // Bersihkan error jika sukses
       } else if (response.data.status === "error") {
-        // Jika server mengembalikan status error, set pesan error dari server
         setError(response.data.message); // Gunakan pesan error dari server
       }
     } catch (err) {
-      // Tangani jika terjadi error lain (misalnya, kegagalan jaringan atau status bukan 200)
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message); // Tampilkan pesan error dari server
+        setError(err.response.data.message); // Pesan error dari server
       } else {
         setError("Failed to delete athlete."); // Pesan default jika tidak ada pesan dari server
       }
-      console.error(err);
+      console.error("Delete error:", err);
     }
   };
 

@@ -1,4 +1,3 @@
-// src/context/MatchContext.jsx
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -11,15 +10,19 @@ export const MatchProvider = ({ children }) => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = Cookies.get("Token"); // Mengganti accessToken dengan Token
+  const token = Cookies.get("Token"); // Mengambil token
   const location = useLocation();
 
-  // Fetch matches data from API
   useEffect(() => {
-    // Hanya panggil fetchMatches jika token tersedia dan user berada di halaman /matches
-    if (!token || location.pathname !== "/matches") {
+    // Pastikan token ada dan halaman sesuai sebelum memulai fetching
+    if (!token) {
+      setError("Token tidak tersedia.");
       setLoading(false);
-      return; // Tidak fetch data jika token tidak ada atau bukan di halaman /matches
+      return;
+    }
+    if (location.pathname !== "/matches") {
+      setLoading(false);
+      return;
     }
 
     const fetchMatches = async () => {
@@ -28,21 +31,25 @@ export const MatchProvider = ({ children }) => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/matches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setMatches(response.data.data || []); // Ambil data dari response
-        setError(null); // Reset error jika sukses
+        setMatches(response.data.data || []); // Pastikan selalu ada default data
+        setError(null); // Reset error setelah sukses
       } catch (error) {
         setError("Failed to fetch matches data.");
-        console.error(error);
+        console.error("Fetch error:", error);
       } finally {
-        setLoading(false); // Matikan loading setelah fetch selesai
+        setLoading(false); // Set loading selesai setelah fetch
       }
     };
 
     fetchMatches();
-  }, [token, location.pathname]); // Pastikan token dan pathname sesuai sebelum memanggil useEffect
+  }, [token, location.pathname]);
 
-  // Add new match
+  // Fungsi untuk menambah match baru
   const addMatch = async (matchData) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/matches`, matchData, {
         headers: { Authorization: `Bearer ${token}` },
@@ -53,32 +60,38 @@ export const MatchProvider = ({ children }) => {
         throw new Error("Match ID is missing in response");
       }
 
-      setMatches((prev) => [...prev, newMatch]); // Tambahkan pertandingan baru ke state
+      setMatches((prev) => [...prev, newMatch]); // Tambahkan match baru ke state
       setError(null);
     } catch (error) {
       setError("Failed to add match.");
-      console.error(error);
+      console.error("Add error:", error);
     }
   };
 
-  // Edit match
+  // Fungsi untuk mengedit match
   const editMatch = async (id, updatedMatch) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
       await axios.put(`${import.meta.env.VITE_API_URL}/matches/${id}`, updatedMatch, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setMatches(
-        (prev) => prev.map((match) => (match.match_id === id ? { ...match, ...updatedMatch } : match)) // Perbarui match
-      );
+      setMatches((prev) => prev.map((match) => (match.match_id === id ? { ...match, ...updatedMatch } : match)));
       setError(null);
     } catch (error) {
       setError("Failed to update match.");
-      console.error(error);
+      console.error("Update error:", error);
     }
   };
 
-  // Delete match
+  // Fungsi untuk menghapus match
   const deleteMatch = async (id) => {
+    if (!token) {
+      setError("Token tidak tersedia.");
+      return;
+    }
     try {
       const response = await axios.delete(`${import.meta.env.VITE_API_URL}/matches/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -95,7 +108,7 @@ export const MatchProvider = ({ children }) => {
       } else {
         setError("Failed to delete match.");
       }
-      console.error(error);
+      console.error("Delete error:", error);
     }
   };
 
@@ -115,7 +128,6 @@ export const MatchProvider = ({ children }) => {
   );
 };
 
-// Menambahkan propTypes untuk validasi properti
 MatchProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

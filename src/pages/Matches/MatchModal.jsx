@@ -14,6 +14,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
   const [competitionId, setCompetitionId] = useState("");
   const [athlete1Id, setAthlete1Id] = useState("");
   const [athlete2Id, setAthlete2Id] = useState("");
+  const [matchNumber, setMatchNumber] = useState("");
   const [matchDate, setMatchDate] = useState("");
 
   // Filter athletes based on team
@@ -25,11 +26,13 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
       setCompetitionId(match.competition_id);
       setAthlete1Id(match.athlete1_id);
       setAthlete2Id(match.athlete2_id);
+      setMatchNumber(match.match_number);
       setMatchDate(match.match_date.split("T")[0]); // Menyesuaikan format tanggal untuk input
     } else {
       setCompetitionId("");
       setAthlete1Id("");
       setAthlete2Id("");
+      setMatchNumber("");
       setMatchDate("");
     }
   }, [match]);
@@ -40,6 +43,7 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
       competition_id: competitionId,
       athlete1_id: athlete1Id,
       athlete2_id: athlete2Id,
+      match_number: matchNumber,
       match_date: matchDate,
     };
 
@@ -110,6 +114,23 @@ const MatchModal = ({ isOpen, setIsOpen, match }) => {
               ))}
             </select>
           </div>
+          <div className="form-control mb-2">
+            <label className="label">
+              <span className="label-text text-black">Match Number</span>
+            </label>
+            <input
+              type="number"
+              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)]"
+              value={matchNumber}
+              onChange={(e) => {
+                // Limit the input to 3 digits
+                if (e.target.value.length <= 3) {
+                  setMatchNumber(e.target.value);
+                }
+              }}
+              required
+            />
+          </div>
 
           <div className="form-control mb-4">
             <label className="label">
@@ -138,6 +159,7 @@ MatchModal.propTypes = {
     competition_id: PropTypes.number,
     athlete1_id: PropTypes.number,
     athlete2_id: PropTypes.number,
+    match_number: PropTypes.string,
     match_date: PropTypes.string,
   }),
 };

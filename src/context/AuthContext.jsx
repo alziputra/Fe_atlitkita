@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import {jwtDecode} from "jwt-decode"; 
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import ModalConfirmation from "../components/ModalConfirmation";
@@ -11,43 +11,39 @@ import ModalConfirmation from "../components/ModalConfirmation";
 export const AuthContext = createContext();
 
 // Fungsi untuk menangani login
-const useLogin = (setUser, navigate) => {
-  const login = async (usernameOrEmail, password) => {
-    if (!usernameOrEmail || !password) {
-      toast.error("Username atau password tidak boleh kosong.");
-      return;
+const login = async (usernameOrEmail, password, setUser, navigate) => {
+  if (!usernameOrEmail || !password) {
+    toast.error("Username atau password tidak boleh kosong.");
+    return;
+  }
+
+  try {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
+      usernameOrEmail,
+      password,
+    });
+
+    // Pastikan respon dari server memiliki Token
+    const { Token } = res.data;
+
+    if (!Token) {
+      throw new Error("Token tidak ditemukan di response.");
     }
 
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
-        usernameOrEmail,
-        password,
-      });
+    // Simpan token di cookie
+    Cookies.set("Token", Token, { secure: true, sameSite: "Strict" });
 
-      // Pastikan respon dari server memiliki Token
-      const { Token } = res.data;
+    // Dekode Token untuk mengambil informasi user
+    const decodedToken = jwtDecode(Token);
+    setUser(decodedToken); // Simpan data user di state
 
-      if (!Token) {
-        throw new Error("Token tidak ditemukan di response.");
-      }
+    toast.success("Login berhasil.");
 
-      // Simpan token di cookie
-      Cookies.set("Token", Token, { secure: true, sameSite: "Strict" });
-
-      // Dekode Token untuk mengambil informasi user
-      const decodedToken = jwtDecode(Token);
-      setUser(decodedToken); // Simpan data user di state
-
-      toast.success("Login berhasil.");
-
-      // Redirect ke dashboard
-      navigate("/dashboard");
-    } catch (error) {
-      handleLoginError(error);
-    }
-  };
-
-  return { login };
+    // Redirect ke dashboard
+    navigate("/dashboard");
+  } catch (error) {
+    handleLoginError(error);
+  }
 };
 
 // Fungsi untuk mengambil data user dari token
@@ -131,35 +127,29 @@ const handleLoginError = (error) => {
 };
 
 // Fungsi untuk menangani logout dengan konfirmasi
-const useLogout = (setUser, navigate) => {
-  const logout = () => {
-    toast(
-      (t) => (
-        <ModalConfirmation
-          message="Apakah Anda ingin logout?"
-          onConfirm={() => {
-            Cookies.remove("Token");
-            setUser(null); // Reset state user
-            toast.dismiss(t.id);
-            navigate("/login"); // Arahkan ke halaman login
-            window.location.reload(); // Reload halaman
-          }}
-          onCancel={() => toast.dismiss(t.id)}
-        />
-      ),
-      { duration: 0 } // Durasi toast 0 berarti toast akan tetap muncul sampai ada aksi konfirmasi
-    );
-  };
-
-  return { logout };
+const logout = (setUser, navigate) => {
+  toast(
+    (t) => (
+      <ModalConfirmation
+        message="Apakah Anda ingin logout?"
+        onConfirm={() => {
+          Cookies.remove("Token");
+          setUser(null); // Reset state user
+          toast.dismiss(t.id);
+          navigate("/login"); // Arahkan ke halaman login
+          window.location.reload(); // Reload halaman
+        }}
+        onCancel={() => toast.dismiss(t.id)}
+      />
+    ),
+    { duration: 0 } // Durasi toast 0 berarti toast akan tetap muncul sampai ada aksi konfirmasi
+  );
 };
 
 // Provider untuk konteks autentikasi
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Menyimpan state user
   const navigate = useNavigate();
-  const { login } = useLogin(setUser, navigate);
-  const { logout } = useLogout(setUser, navigate);
 
   // Panggil fetchUser jika token tersedia
   useEffect(() => {
@@ -169,7 +159,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []); // Gunakan token untuk mengambil data user
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        login: (usernameOrEmail, password) => login(usernameOrEmail, password, setUser, navigate),
+        logout: () => logout(setUser, navigate),
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 // Menambahkan propTypes untuk validasi properti

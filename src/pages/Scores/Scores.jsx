@@ -1,111 +1,97 @@
-import { useEffect } from "react";
-import { useScore } from "../../hooks/useScore";
-import { useAuth } from "../../hooks/useAuth";
+import { useContext, useState } from "react";
+import { ScoreContext } from "../../context/ScoreContext"; // Gunakan ScoreContext
 import toast from "react-hot-toast";
 
 const Scores = () => {
-  const { matches, error, selectedCompetition, setSelectedCompetition, selectedAthlete, setSelectedAthlete, showSelectedChoices, handleCompetitionChange, handleShowChoices } = useScore();
-  const { user } = useAuth(); // Mendapatkan user dari useAuth
+  const { matches, scores, handleScoreChange, submitScores, loading, error } = useContext(ScoreContext); // Ambil data dari ScoreContext
+  const [selectedMatchNumber, setSelectedMatchNumber] = useState(""); // Untuk menyimpan match_number
+  const [showScoring, setShowScoring] = useState(false); // Mengatur apakah bilah penilaian akan ditampilkan
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
+  // Mendapatkan match berdasarkan match_number yang dipilih
+  const selectedMatch = matches.find((match) => match.match_number === selectedMatchNumber);
+
+  // Fungsi untuk memulai penilaian
+  const startScoring = () => {
+    if (!selectedMatch) {
+      toast.error("Pilih pertandingan terlebih dahulu.");
+      return;
     }
-  }, [error]);
+    setShowScoring(true); // Tampilkan bilah penilaian
+  };
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-lg p-4">
-        <div className="border-2 border-black rounded-lg p-6 mb-3">
-          <h2 className="text-2xl font-bold mb-6">Penilaian Atlet</h2>
+      <div className="bg-white border-2 border-black shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-4">Penilaian Juri</h2>
 
-          <div className="grid grid-cols-2 gap-4">
-            {/* Select Competition */}
-            <div className="mb-6">
-              <label className="block font-bold mb-2">Pilih Pertandingan</label>
-              <select value={selectedCompetition} onChange={(e) => handleCompetitionChange(e.target.value)} className="select select-bordered w-full">
-                <option value="" disabled>
-                  Pilih Pertandingan
-                </option>
-                {matches
-                  .filter((match, index, self) => index === self.findIndex((m) => m.competition_id === match.competition_id))
-                  .map((match) => (
-                    <option key={match.competition_id} value={match.competition_id}>
-                      {match.competition_name}
-                    </option>
-                  ))}
-              </select>
-            </div>
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
-            {/* Select Athletes */}
-            <div className="mb-6">
-              <label className="block font-bold mb-2">Pilih Atlet</label>
-              <select value={selectedAthlete} onChange={(e) => setSelectedAthlete(e.target.value)} className="select select-bordered w-full" disabled={!selectedCompetition}>
-                <option value="" disabled>
-                  Pilih Atlet
-                </option>
-                {matches
-                  .filter((match) => match.competition_id.toString() === selectedCompetition)
-                  .map((match) => (
-                    <option key={match.athlete1_id} value={match.athlete1_id}>
-                      {match.athlete1_name} VS {match.athlete2_name}
-                    </option>
-                  ))}
-              </select>
-            </div>
-          </div>
-
-          <button
-            className="flex btn btn-sm bg-[#2ac34b] hover:bg-[#74f590] text-white hover:text-black border-2 border-black items-center hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]"
-            onClick={() => handleShowChoices(matches, selectedAthlete, user, selectedCompetition)}
+        {/* Pilih Pertandingan berdasarkan match_number */}
+        <div className="mb-4">
+          <label className="block font-bold mb-2">Pilih Nomor Pertandingan</label>
+          <select
+            value={selectedMatchNumber || ""}
+            onChange={(e) => setSelectedMatchNumber(e.target.value)} // Simpan match_number di selectedMatchNumber
+            className="select select-bordered w-full"
           >
-            Masuk penilaian
-          </button>
+            <option value="" disabled>
+              Pilih Nomor Pertandingan
+            </option>
+            {matches.map((match) => (
+              <option key={match.match_id} value={match.match_number}>
+                Nomor {match.match_number}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Display Selected Choices */}
-        {showSelectedChoices && (
-          <div className="border-2 border-black rounded-lg p-6">
-            <div className="mb-4">
-              <div className="flex justify-between gap-2">
-                <div className="flex flex-col items-center w-1/2 bg-blue-500 p-4 rounded-lg">
-                  {selectedAthlete
-                    ? (() => {
-                        const match = matches.find((match) => match.athlete1_id.toString() === selectedAthlete || match.athlete2_id.toString() === selectedAthlete);
-                        if (match) {
-                          return match.athlete1_id.toString() === selectedAthlete ? match.athlete1_name : match.athlete2_name;
-                        }
-                        return "Belum dipilih";
-                      })()
-                    : "Belum dipilih"}
-                  <div className="flex flex-col mt-4 gap-2">
-                    <button className="btn btn-primary">Kick Score</button>
-                    <button className="btn btn-primary">Punch Score</button>
-                    <button className="btn btn-primary">Elbow Score</button>
-                    <button className="btn btn-primary">Knee Score</button>
-                    <button className="btn btn-primary">Throw Score</button>
-                  </div>
-                </div>
+        {/* Menampilkan informasi pertandingan setelah match_number dipilih */}
+        {selectedMatch && (
+          <div className="mb-4">
+            <h3 className="text-xl font-bold">Informasi Pertandingan:</h3>
+            <p>Kompetisi: {selectedMatch.competition_name}</p>
+            <p>Atlet 1: {selectedMatch.athlete1_name}</p>
+            <p>Atlet 2: {selectedMatch.athlete2_name}</p>
+          </div>
+        )}
 
-                <div className="flex flex-col items-center w-1/2 bg-red-500 p-4 rounded-lg">
-                  {selectedAthlete
-                    ? (() => {
-                        const match = matches.find((match) => match.athlete1_id.toString() === selectedAthlete || match.athlete2_id.toString() === selectedAthlete);
-                        if (match) {
-                          return match.athlete1_id.toString() === selectedAthlete ? match.athlete2_name : match.athlete1_name;
-                        }
-                        return "Belum dipilih";
-                      })()
-                    : "Belum dipilih"}
-                  <div className="flex flex-col mt-4 gap-2">
-                    <button className="btn btn-primary">Kick Score</button>
-                    <button className="btn btn-primary">Punch Score</button>
-                    <button className="btn btn-primary">Elbow Score</button>
-                    <button className="btn btn-primary">Knee Score</button>
-                    <button className="btn btn-primary">Throw Score</button>
-                  </div>
+        {/* Tombol Mulai Penilaian */}
+        {selectedMatch && (
+          <button className="btn btn-primary w-full" onClick={startScoring}>
+            Mulai Penilaian
+          </button>
+        )}
+
+        {/* Bilah Penilaian */}
+        {showScoring && selectedMatch && (
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            {/* Penilaian Athlete 1 */}
+            <div className="flex flex-col items-center bg-blue-200 p-4 rounded-lg">
+              <h3 className="text-xl font-bold">{selectedMatch.athlete1_name}</h3> {/* Nama Atlet 1 */}
+              {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
+                <div key={scoreType} className="mb-2">
+                  <label className="block">{scoreType.replace("_", " ").toUpperCase()}</label>
+                  <input type="number" value={scores[scoreType]} onChange={(e) => handleScoreChange(scoreType, parseInt(e.target.value))} className="input input-bordered w-full" />
                 </div>
-              </div>
+              ))}
+              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete1_id)}>
+                Submit Athlete 1
+              </button>
+            </div>
+
+            {/* Penilaian Athlete 2 */}
+            <div className="flex flex-col items-center bg-red-200 p-4 rounded-lg">
+              <h3 className="text-xl font-bold">{selectedMatch.athlete2_name}</h3> {/* Nama Atlet 2 */}
+              {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
+                <div key={scoreType} className="mb-2">
+                  <label className="block">{scoreType.replace("_", " ").toUpperCase()}</label>
+                  <input type="number" value={scores[scoreType]} onChange={(e) => handleScoreChange(scoreType, parseInt(e.target.value))} className="input input-bordered w-full" />
+                </div>
+              ))}
+              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete2_id)}>
+                Submit Athlete 2
+              </button>
             </div>
           </div>
         )}
