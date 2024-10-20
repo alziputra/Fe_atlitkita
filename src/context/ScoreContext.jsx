@@ -8,15 +8,21 @@ export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
   const [matches, setMatches] = useState([]); // Data pertandingan
-  const [selectedCompetition, setSelectedCompetition] = useState(null); // Kompetisi yang dipilih
-  const [selectedAthlete, setSelectedAthlete] = useState(null); // Atlet yang dipilih
-  const [scores, setScores] = useState({
+  const [selectedMatchNumber, setSelectedMatchNumber] = useState(null); // Nomor pertandingan yang dipilih
+  const [athlete1Scores, setAthlete1Scores] = useState({
     kick_score: 0,
     punch_score: 0,
     elbow_score: 0,
     knee_score: 0,
     throw_score: 0,
-  }); // Skor yang akan diberikan
+  }); // Skor untuk athlete1
+  const [athlete2Scores, setAthlete2Scores] = useState({
+    kick_score: 0,
+    punch_score: 0,
+    elbow_score: 0,
+    knee_score: 0,
+    throw_score: 0,
+  }); // Skor untuk athlete2
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = Cookies.get("Token");
@@ -48,23 +54,33 @@ export const ScoreProvider = ({ children }) => {
     fetchMatches();
   }, [token]);
 
-  // Fungsi untuk menangani perubahan skor
-  const handleScoreChange = (scoreType, value) => {
-    setScores((prevScores) => ({
+  // Fungsi untuk menangani perubahan skor athlete1
+  const handleAthlete1ScoreChange = (scoreType, value) => {
+    setAthlete1Scores((prevScores) => ({
+      ...prevScores,
+      [scoreType]: value,
+    }));
+  };
+
+  // Fungsi untuk menangani perubahan skor athlete2
+  const handleAthlete2ScoreChange = (scoreType, value) => {
+    setAthlete2Scores((prevScores) => ({
       ...prevScores,
       [scoreType]: value,
     }));
   };
 
   // Fungsi untuk mengirim penilaian ke server
-  const submitScores = async (athleteId) => {
-    if (!selectedCompetition || !athleteId) {
-      toast.error("Pilih pertandingan dan atlet terlebih dahulu.");
+  const submitScores = async (athleteId, scores) => {
+    const selectedMatch = matches.find((match) => match.match_number === selectedMatchNumber);
+
+    if (!selectedMatch || !athleteId) {
+      toast.error("Pilih nomor pertandingan dan atlet terlebih dahulu.");
       return;
     }
 
     const body = {
-      match_id: selectedCompetition,
+      match_id: selectedMatch.match_id, // Gunakan match_id dari match yang dipilih
       judge_id: 4, // Asumsikan ID juri (misal dari context user)
       athlete_id: athleteId,
       ...scores,
@@ -85,12 +101,12 @@ export const ScoreProvider = ({ children }) => {
     <ScoreContext.Provider
       value={{
         matches,
-        selectedCompetition,
-        setSelectedCompetition,
-        selectedAthlete,
-        setSelectedAthlete,
-        scores,
-        handleScoreChange,
+        selectedMatchNumber,
+        setSelectedMatchNumber,
+        athlete1Scores,
+        athlete2Scores,
+        handleAthlete1ScoreChange,
+        handleAthlete2ScoreChange,
         submitScores,
         loading,
         error,

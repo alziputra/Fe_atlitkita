@@ -3,8 +3,19 @@ import { ScoreContext } from "../../context/ScoreContext"; // Gunakan ScoreConte
 import toast from "react-hot-toast";
 
 const Scores = () => {
-  const { matches, scores, handleScoreChange, submitScores, loading, error } = useContext(ScoreContext); // Ambil data dari ScoreContext
-  const [selectedMatchNumber, setSelectedMatchNumber] = useState(""); // Untuk menyimpan match_number
+  const {
+    matches,
+    selectedMatchNumber,
+    setSelectedMatchNumber,
+    athlete1Scores, // Ambil athlete1Scores dari context
+    athlete2Scores, // Ambil athlete2Scores dari context
+    handleAthlete1ScoreChange,
+    handleAthlete2ScoreChange,
+    submitScores,
+    loading,
+    error,
+  } = useContext(ScoreContext); // Pastikan semua state diambil dari context
+
   const [showScoring, setShowScoring] = useState(false); // Mengatur apakah bilah penilaian akan ditampilkan
 
   // Mendapatkan match berdasarkan match_number yang dipilih
@@ -40,7 +51,7 @@ const Scores = () => {
             </option>
             {matches.map((match) => (
               <option key={match.match_id} value={match.match_number}>
-                Nomor {match.match_number}
+                Nomor {match.match_number} - {match.competition_name}
               </option>
             ))}
           </select>
@@ -72,10 +83,36 @@ const Scores = () => {
               {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
                 <div key={scoreType} className="mb-2">
                   <label className="block">{scoreType.replace("_", " ").toUpperCase()}</label>
-                  <input type="number" value={scores[scoreType]} onChange={(e) => handleScoreChange(scoreType, parseInt(e.target.value))} className="input input-bordered w-full" />
+                  <div className="flex items-center justify-center space-x-2">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={
+                        () => handleAthlete1ScoreChange(scoreType, Math.max(0, athlete1Scores[scoreType] - 1)) // Kurangi skor, minimal 0
+                      }
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={athlete1Scores[scoreType]} // Ambil skor athlete1 dari context
+                      onChange={(e) => handleAthlete1ScoreChange(scoreType, parseInt(e.target.value))}
+                      className="input input-bordered text-center w-16"
+                    />
+                    <button
+                      className="btn btn-secondary"
+                      onClick={
+                        () => handleAthlete1ScoreChange(scoreType, athlete1Scores[scoreType] + 1) // Tambahkan skor
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               ))}
-              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete1_id)}>
+              <button
+                className="btn btn-primary w-full mt-4"
+                onClick={() => submitScores(selectedMatch.athlete1_id, athlete1Scores)} // Kirim skor athlete1
+              >
                 Submit Athlete 1
               </button>
             </div>
@@ -86,10 +123,36 @@ const Scores = () => {
               {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
                 <div key={scoreType} className="mb-2">
                   <label className="block">{scoreType.replace("_", " ").toUpperCase()}</label>
-                  <input type="number" value={scores[scoreType]} onChange={(e) => handleScoreChange(scoreType, parseInt(e.target.value))} className="input input-bordered w-full" />
+                  <div className="flex items-center justify-center space-x-2">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={
+                        () => handleAthlete2ScoreChange(scoreType, Math.max(0, athlete2Scores[scoreType] - 1)) // Kurangi skor, minimal 0
+                      }
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={athlete2Scores[scoreType]} // Ambil skor athlete2 dari context
+                      onChange={(e) => handleAthlete2ScoreChange(scoreType, parseInt(e.target.value))}
+                      className="input input-bordered text-center w-16"
+                    />
+                    <button
+                      className="btn btn-secondary"
+                      onClick={
+                        () => handleAthlete2ScoreChange(scoreType, athlete2Scores[scoreType] + 1) // Tambahkan skor
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               ))}
-              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete2_id)}>
+              <button
+                className="btn btn-primary w-full mt-4"
+                onClick={() => submitScores(selectedMatch.athlete2_id, athlete2Scores)} // Kirim skor athlete2
+              >
                 Submit Athlete 2
               </button>
             </div>
