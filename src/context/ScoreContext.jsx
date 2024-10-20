@@ -1,12 +1,14 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react"; // Impor useContext dari react
 import PropTypes from "prop-types";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import { AuthContext } from "../context/AuthContext"; // Impor AuthContext untuk mengambil user
 
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
+  const { user } = useContext(AuthContext); // Ambil user dari AuthContext
   const [matches, setMatches] = useState([]); // Data pertandingan
   const [selectedMatchNumber, setSelectedMatchNumber] = useState(null); // Nomor pertandingan yang dipilih
   const [athlete1Scores, setAthlete1Scores] = useState({
@@ -26,6 +28,15 @@ export const ScoreProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = Cookies.get("Token");
+
+  // Bobot poin untuk setiap jenis skor
+  const scoreWeights = {
+    kick_score: 2,
+    punch_score: 1,
+    elbow_score: 1,
+    knee_score: 2,
+    throw_score: 3,
+  };
 
   // Fetch data matches dari API
   useEffect(() => {
@@ -55,18 +66,18 @@ export const ScoreProvider = ({ children }) => {
   }, [token]);
 
   // Fungsi untuk menangani perubahan skor athlete1
-  const handleAthlete1ScoreChange = (scoreType, value) => {
+  const handleAthlete1ScoreChange = (scoreType, increment) => {
     setAthlete1Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: value,
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment * scoreWeights[scoreType]), // Tambahkan atau kurangi sesuai bobot
     }));
   };
 
   // Fungsi untuk menangani perubahan skor athlete2
-  const handleAthlete2ScoreChange = (scoreType, value) => {
+  const handleAthlete2ScoreChange = (scoreType, increment) => {
     setAthlete2Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: value,
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment * scoreWeights[scoreType]), // Tambahkan atau kurangi sesuai bobot
     }));
   };
 
@@ -81,11 +92,17 @@ export const ScoreProvider = ({ children }) => {
 
     const body = {
       match_id: selectedMatch.match_id, // Gunakan match_id dari match yang dipilih
-      judge_id: 4, // Asumsikan ID juri (misal dari context user)
-      athlete_id: athleteId,
-      ...scores,
+      judge_id: user?.id, // Gunakan user.id dari AuthContext sebagai judge_id, fallback jika user.id tidak ada
+      athlete_id: athleteId, // ID atlet
+      kick_score: scores.kick_score,
+      punch_score: scores.punch_score,
+      elbow_score: scores.elbow_score,
+      knee_score: scores.knee_score,
+      throw_score: scores.throw_score,
     };
 
+    // Tampilkan inputan user di konsol
+    console.log("Data yang dikirim ke server:", body);
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/scores`, body, {
         headers: { Authorization: `Bearer ${token}` },
