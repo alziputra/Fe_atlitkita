@@ -19,6 +19,7 @@ const Scores = () => {
 
   const [showScoring, setShowScoring] = useState(false);
   const [submissionMessages, setSubmissionMessages] = useState({ athlete1: "", athlete2: "" });
+  const [resultsMessage, setResultsMessage] = useState({ match_id: "" });
 
   const selectedMatch = matches.find((match) => match.match_number === selectedMatchNumber);
 
@@ -42,12 +43,13 @@ const Scores = () => {
   const handleSubmitMatchResults = async () => {
     if (selectedMatch) {
       await submitMatchResults(selectedMatch.match_id);
+      setResultsMessage({ match_id: "Hasil penilaian berhasil disimpan." });
     }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <div className="bg-white border-2 border-black shadow-lg rounded-lg p-6">
+      <div className="bg-white border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-4">Penilaian Juri</h2>
 
         {loading && <p>Loading...</p>}
@@ -69,10 +71,20 @@ const Scores = () => {
 
         {selectedMatch && (
           <div className="mb-4">
-            <h3 className="text-xl font-bold">Informasi Pertandingan:</h3>
-            <p>Kompetisi: {selectedMatch.competition_name}</p>
-            <p>Atlet 1: {selectedMatch.athlete1_name}</p>
-            <p>Atlet 2: {selectedMatch.athlete2_name}</p>
+            <div className="mb-4">
+              <label className="block text-sm md:text-base font-semibold mb-1">Kompetisi</label>
+              <input type="text" value={selectedMatch.competition_name} readOnly className="w-full p-2 border rounded-lg text-sm md:text-base" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-1">Atlet 1</label>
+                <input type="text" value={selectedMatch.athlete1_name} readOnly className="w-full p-2 border rounded-lg text-sm md:text-base" />
+              </div>
+              <div>
+                <label className="block text-sm md:text-base font-semibold mb-1">Atlet 2</label>
+                <input type="text" value={selectedMatch.athlete2_name} readOnly className="w-full p-2 border rounded-lg text-sm md:text-base" />
+              </div>
+            </div>
           </div>
         )}
 
@@ -82,6 +94,7 @@ const Scores = () => {
           </button>
         )}
 
+        {/* Tampilan untuk mengisi skor */}
         {showScoring && selectedMatch && (
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center bg-blue-200 p-4 rounded-lg">
@@ -136,6 +149,7 @@ const Scores = () => {
             Simpan Hasil Penilaian
           </button>
         )}
+        {resultsMessage.match_id && <p className="text-green-600 mt-2">{resultsMessage.match_id}</p>}
       </div>
     </div>
   );
