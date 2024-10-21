@@ -65,19 +65,19 @@ export const ScoreProvider = ({ children }) => {
     fetchMatches();
   }, [token]);
 
-  // Fungsi untuk menangani perubahan skor athlete1
+  // Fungsi untuk menangani perubahan skor athlete1 (increment/decrement by 1)
   const handleAthlete1ScoreChange = (scoreType, increment) => {
     setAthlete1Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: Math.max(0, prevScores[scoreType] + increment * scoreWeights[scoreType]), // Tambahkan atau kurangi sesuai bobot
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment), // Tambahkan atau kurangi 1
     }));
   };
 
-  // Fungsi untuk menangani perubahan skor athlete2
+  // Fungsi untuk menangani perubahan skor athlete2 (increment/decrement by 1)
   const handleAthlete2ScoreChange = (scoreType, increment) => {
     setAthlete2Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: Math.max(0, prevScores[scoreType] + increment * scoreWeights[scoreType]), // Tambahkan atau kurangi sesuai bobot
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment), // Tambahkan atau kurangi 1
     }));
   };
 
@@ -90,15 +90,20 @@ export const ScoreProvider = ({ children }) => {
       return;
     }
 
+    // Apply weights before sending the scores
+    const weightedScores = {
+      kick_score: scores.kick_score * scoreWeights.kick_score,
+      punch_score: scores.punch_score * scoreWeights.punch_score,
+      elbow_score: scores.elbow_score * scoreWeights.elbow_score,
+      knee_score: scores.knee_score * scoreWeights.knee_score,
+      throw_score: scores.throw_score * scoreWeights.throw_score,
+    };
+
     const body = {
       match_id: selectedMatch.match_id, // Gunakan match_id dari match yang dipilih
       judge_id: user?.id, // Gunakan user.id dari AuthContext sebagai judge_id, fallback jika user.id tidak ada
       athlete_id: athleteId, // ID atlet
-      kick_score: scores.kick_score,
-      punch_score: scores.punch_score,
-      elbow_score: scores.elbow_score,
-      knee_score: scores.knee_score,
-      throw_score: scores.throw_score,
+      ...weightedScores,
     };
 
     // Tampilkan inputan user di konsol

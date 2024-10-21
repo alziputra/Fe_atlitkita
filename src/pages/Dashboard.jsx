@@ -42,6 +42,8 @@ const Dashboard = () => {
     fetchData();
   }, [fetchDataWithAuth]); // Tambahkan `fetchDataWithAuth` sebagai dependensi
 
+  
+
   return (
     <div className="flex flex-wrap justify-center items-start py-4 gap-4 lg:gap-8">
       {/* Widget for Total Athletes */}

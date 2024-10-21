@@ -1,43 +1,32 @@
 import { useContext, useState } from "react";
-import { ScoreContext } from "../../context/ScoreContext"; // Gunakan ScoreContext
+import { ScoreContext } from "../../context/ScoreContext"; // Use ScoreContext
 import toast from "react-hot-toast";
 
 const Scores = () => {
   const { matches, selectedMatchNumber, setSelectedMatchNumber, athlete1Scores, athlete2Scores, handleAthlete1ScoreChange, handleAthlete2ScoreChange, submitScores, loading, error } = useContext(ScoreContext);
 
-  const [showScoring, setShowScoring] = useState(false); // Mengatur apakah bilah penilaian akan ditampilkan
-  const [athlete1Message, setAthlete1Message] = useState(""); // Untuk menyimpan pesan Athlete 1
-  const [athlete2Message, setAthlete2Message] = useState(""); // Untuk menyimpan pesan Athlete 2
+  const [showScoring, setShowScoring] = useState(false); // Toggle scoring visibility
+  const [submissionMessages, setSubmissionMessages] = useState({ athlete1: "", athlete2: "" }); // Submission messages
 
-  // Mendapatkan match berdasarkan match_number yang dipilih
+  // Get the match based on selected match_number
   const selectedMatch = matches.find((match) => match.match_number === selectedMatchNumber);
 
-  // Fungsi untuk memulai penilaian
+  // Start scoring process
   const startScoring = () => {
     if (!selectedMatch) {
       toast.error("Pilih pertandingan terlebih dahulu.");
       return;
     }
-    setShowScoring(true); // Tampilkan bilah penilaian
+    setShowScoring(true); // Show the scoring section
   };
 
-  // Fungsi untuk mengirim skor Athlete 1
-  const handleSubmitAthlete1 = async () => {
+  // Handle score submission for either athlete
+  const handleSubmitScores = async (athleteId, scores, athlete) => {
     try {
-      await submitScores(selectedMatch.athlete1_id, athlete1Scores);
-      setAthlete1Message("Skor disimpan");
-    } catch (error) {
-      setAthlete1Message("Gagal menyimpan skor");
-    }
-  };
-
-  // Fungsi untuk mengirim skor Athlete 2
-  const handleSubmitAthlete2 = async () => {
-    try {
-      await submitScores(selectedMatch.athlete2_id, athlete2Scores);
-      setAthlete2Message("Skor disimpan");
-    } catch (error) {
-      setAthlete2Message("Gagal menyimpan skor");
+      await submitScores(athleteId, scores);
+      setSubmissionMessages((prev) => ({ ...prev, [athlete]: "Skor berhasil disimpan." }));
+    } catch {
+      setSubmissionMessages((prev) => ({ ...prev, [athlete]: "Gagal menyimpan skor." }));
     }
   };
 
@@ -49,12 +38,12 @@ const Scores = () => {
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* Pilih Pertandingan berdasarkan match_number */}
+        {/* Select match based on match_number */}
         <div className="mb-4">
           <label className="block font-bold mb-2">Pilih Nomor Pertandingan</label>
           <select
             value={selectedMatchNumber || ""}
-            onChange={(e) => setSelectedMatchNumber(e.target.value)} // Simpan match_number di selectedMatchNumber
+            onChange={(e) => setSelectedMatchNumber(e.target.value)} // Store match_number
             className="select select-bordered w-full"
           >
             <option value="" disabled>
@@ -62,13 +51,13 @@ const Scores = () => {
             </option>
             {matches.map((match) => (
               <option key={match.match_id} value={match.match_number}>
-                Nomor {match.match_number} - {match.competition_name}
+                Nomor {match.match_number}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Menampilkan informasi pertandingan setelah match_number dipilih */}
+        {/* Show match details after selecting match_number */}
         {selectedMatch && (
           <div className="mb-4">
             <h3 className="text-xl font-bold">Informasi Pertandingan:</h3>
@@ -78,17 +67,17 @@ const Scores = () => {
           </div>
         )}
 
-        {/* Tombol Mulai Penilaian */}
+        {/* Start scoring button */}
         {selectedMatch && (
           <button className="btn btn-primary w-full" onClick={startScoring}>
             Mulai Penilaian
           </button>
         )}
 
-        {/* Bilah Penilaian */}
+        {/* Scoring section */}
         {showScoring && selectedMatch && (
           <div className="mt-6 grid grid-cols-2 gap-4">
-            {/* Penilaian Athlete 1 */}
+            {/* Scoring for Athlete 1 */}
             <div className="flex flex-col items-center bg-blue-200 p-4 rounded-lg">
               <h3 className="text-xl font-bold">{selectedMatch.athlete1_name}</h3>
               {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
@@ -97,32 +86,32 @@ const Scores = () => {
                   <div className="flex items-center justify-center space-x-2">
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleAthlete1ScoreChange(scoreType, -1)} // Kurangi sesuai dengan bobot
+                      onClick={() => handleAthlete1ScoreChange(scoreType, -1)} // Decrement score
                     >
                       -
                     </button>
                     <input
                       type="number"
-                      value={athlete1Scores[scoreType]} // Ambil skor athlete1 dari context
+                      value={athlete1Scores[scoreType]} // Athlete 1 score from context
                       className="input input-bordered text-center w-16"
                       readOnly
                     />
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleAthlete1ScoreChange(scoreType, 1)} // Tambahkan sesuai dengan bobot
+                      onClick={() => handleAthlete1ScoreChange(scoreType, 1)} // Increment score
                     >
                       +
                     </button>
                   </div>
                 </div>
               ))}
-              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete1_id, athlete1Scores)}>
+              <button className="btn btn-primary w-full mt-4" onClick={() => handleSubmitScores(selectedMatch.athlete1_id, athlete1Scores, "athlete1")}>
                 Submit Athlete 1
               </button>
-              {athlete1Message && <p className="text-green-600 mt-2">{athlete1Message}</p>}
+              {submissionMessages.athlete1 && <p className="text-green-600 mt-2">{submissionMessages.athlete1}</p>}
             </div>
 
-            {/* Penilaian Athlete 2 */}
+            {/* Scoring for Athlete 2 */}
             <div className="flex flex-col items-center bg-red-200 p-4 rounded-lg">
               <h3 className="text-xl font-bold">{selectedMatch.athlete2_name}</h3>
               {["kick_score", "punch_score", "elbow_score", "knee_score", "throw_score"].map((scoreType) => (
@@ -131,29 +120,29 @@ const Scores = () => {
                   <div className="flex items-center justify-center space-x-2">
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleAthlete2ScoreChange(scoreType, -1)} // Kurangi sesuai dengan bobot
+                      onClick={() => handleAthlete2ScoreChange(scoreType, -1)} // Decrement score
                     >
                       -
                     </button>
                     <input
                       type="number"
-                      value={athlete2Scores[scoreType]} // Ambil skor athlete2 dari context
+                      value={athlete2Scores[scoreType]} // Athlete 2 score from context
                       className="input input-bordered text-center w-16"
                       readOnly
                     />
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleAthlete2ScoreChange(scoreType, 1)} // Tambahkan sesuai dengan bobot
+                      onClick={() => handleAthlete2ScoreChange(scoreType, 1)} // Increment score
                     >
                       +
                     </button>
                   </div>
                 </div>
               ))}
-              <button className="btn btn-primary w-full mt-4" onClick={() => submitScores(selectedMatch.athlete2_id, athlete2Scores)}>
+              <button className="btn btn-primary w-full mt-4" onClick={() => handleSubmitScores(selectedMatch.athlete2_id, athlete2Scores, "athlete2")}>
                 Submit Athlete 2
               </button>
-              {athlete2Message && <p className="text-green-600 mt-2">{athlete2Message}</p>}
+              {submissionMessages.athlete2 && <p className="text-green-600 mt-2">{submissionMessages.athlete2}</p>}
             </div>
           </div>
         )}
