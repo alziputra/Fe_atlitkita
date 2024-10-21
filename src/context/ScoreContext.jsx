@@ -1,35 +1,34 @@
-import { createContext, useState, useEffect, useContext } from "react"; // Impor useContext dari react
+import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { AuthContext } from "../context/AuthContext"; // Impor AuthContext untuk mengambil user
+import { AuthContext } from "../context/AuthContext";
 
 export const ScoreContext = createContext();
 
 export const ScoreProvider = ({ children }) => {
-  const { user } = useContext(AuthContext); // Ambil user dari AuthContext
-  const [matches, setMatches] = useState([]); // Data pertandingan
-  const [selectedMatchNumber, setSelectedMatchNumber] = useState(null); // Nomor pertandingan yang dipilih
+  const { user } = useContext(AuthContext);
+  const [matches, setMatches] = useState([]);
+  const [selectedMatchNumber, setSelectedMatchNumber] = useState(null);
   const [athlete1Scores, setAthlete1Scores] = useState({
     kick_score: 0,
     punch_score: 0,
     elbow_score: 0,
     knee_score: 0,
     throw_score: 0,
-  }); // Skor untuk athlete1
+  });
   const [athlete2Scores, setAthlete2Scores] = useState({
     kick_score: 0,
     punch_score: 0,
     elbow_score: 0,
     knee_score: 0,
     throw_score: 0,
-  }); // Skor untuk athlete2
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = Cookies.get("Token");
 
-  // Bobot poin untuk setiap jenis skor
   const scoreWeights = {
     kick_score: 2,
     punch_score: 1,
@@ -38,7 +37,6 @@ export const ScoreProvider = ({ children }) => {
     throw_score: 3,
   };
 
-  // Fetch data matches dari API
   useEffect(() => {
     const fetchMatches = async () => {
       if (!token) {
@@ -52,36 +50,53 @@ export const ScoreProvider = ({ children }) => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/matches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setMatches(response.data.data || []); // Ambil data dari response
+        setMatches(response.data.data || []);
         setError(null);
       } catch (error) {
         setError("Gagal memuat data pertandingan.");
         console.error(error);
       } finally {
-        setLoading(false); // Setelah loading selesai
+        setLoading(false);
       }
     };
 
     fetchMatches();
   }, [token]);
 
-  // Fungsi untuk menangani perubahan skor athlete1 (increment/decrement by 1)
   const handleAthlete1ScoreChange = (scoreType, increment) => {
     setAthlete1Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: Math.max(0, prevScores[scoreType] + increment), // Tambahkan atau kurangi 1
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment),
     }));
   };
 
-  // Fungsi untuk menangani perubahan skor athlete2 (increment/decrement by 1)
   const handleAthlete2ScoreChange = (scoreType, increment) => {
     setAthlete2Scores((prevScores) => ({
       ...prevScores,
-      [scoreType]: Math.max(0, prevScores[scoreType] + increment), // Tambahkan atau kurangi 1
+      [scoreType]: Math.max(0, prevScores[scoreType] + increment),
     }));
   };
 
-  // Fungsi untuk mengirim penilaian ke server
+  // Function to submit match results to /api/results
+  const submitMatchResults = async (matchId) => {
+    if (!matchId) {
+      toast.error("Pilih pertandingan terlebih dahulu.");
+      return;
+    }
+
+    const body = { match_id: matchId };
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/results`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Hasil penilaian berhasil disimpan.");
+    } catch (error) {
+      toast.error("Gagal menyimpan hasil penilaian.");
+      console.error(error);
+    }
+  };
+
   const submitScores = async (athleteId, scores) => {
     const selectedMatch = matches.find((match) => match.match_number === selectedMatchNumber);
 
@@ -90,7 +105,6 @@ export const ScoreProvider = ({ children }) => {
       return;
     }
 
-    // Apply weights before sending the scores
     const weightedScores = {
       kick_score: scores.kick_score * scoreWeights.kick_score,
       punch_score: scores.punch_score * scoreWeights.punch_score,
@@ -100,13 +114,12 @@ export const ScoreProvider = ({ children }) => {
     };
 
     const body = {
-      match_id: selectedMatch.match_id, // Gunakan match_id dari match yang dipilih
-      judge_id: user?.id, // Gunakan user.id dari AuthContext sebagai judge_id, fallback jika user.id tidak ada
-      athlete_id: athleteId, // ID atlet
+      match_id: selectedMatch.match_id,
+      judge_id: user?.id,
+      athlete_id: athleteId,
       ...weightedScores,
     };
 
-    // Tampilkan inputan user di konsol
     console.log("Data yang dikirim ke server:", body);
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/scores`, body, {
@@ -130,6 +143,7 @@ export const ScoreProvider = ({ children }) => {
         handleAthlete1ScoreChange,
         handleAthlete2ScoreChange,
         submitScores,
+        submitMatchResults, // New function added here
         loading,
         error,
       }}
@@ -139,7 +153,6 @@ export const ScoreProvider = ({ children }) => {
   );
 };
 
-// Menambahkan propTypes untuk validasi properti
 ScoreProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
