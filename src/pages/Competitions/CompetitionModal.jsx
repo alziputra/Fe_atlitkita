@@ -21,7 +21,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
       setCompetitionName("");
       setLocation("");
       setCompetitionDate("");
-      setStatus("");
+      setStatus("ongoing"); // Default value
     }
   }, [competition]);
 
@@ -76,13 +76,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
             <label className="label">
               <span className="label-text text-black">Location</span>
             </label>
-            <input
-              type="text"
-              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
-              value={Location}
-              onChange={(e) => setLocation(e.target.value)}
-              required
-            />
+            <input type="text" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={Location} onChange={(e) => setLocation(e.target.value)} required />
           </div>
           <div className="form-control mb-2">
             <label className="label">
