@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import { CompetitionContext } from "../../context/CompetitionContext";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaCheck } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
@@ -50,23 +50,34 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
 
   return (
     <div className={`modal ${isOpen ? "modal-open" : ""}`}>
-      <div className="modal-box mx-auto border-2 border-slate-700 shadow-[4px_4px_0px_rgba(0,0,0,1)] p-4 max-h-[calc(100vh-8rem)] overflow-hidden bg-[#F5F5DC]">
-        <div className="flex justify-between items-center mb-4">
+      <div className="modal-box mx-auto border-2 border-slate-700 shadow-[4px_4px_0px_rgba(0,0,0,1)] p-4 max-h-screen overflow-y-auto bg-[#F5F5DC]">
+        <div className="flex justify-between items-center p-2">
           <h2 className="text-lg font-bold text-black">{competition ? "Edit Competition" : "Add Competition"}</h2>
-          <button className="btn bg-red-500 text-black border-2 border-black hover:bg-red-600" onClick={() => setIsOpen(false)}>
-            <FaTimes />
-          </button>
+          <div className="flex gap-2">
+            {/* Close Button */}
+            <button className="btn btn-sm bg-red-500 text-black border-2 border-slate-700 hover:bg-red-600 focus:shadow-[2px_2px_0px_rgba(0,0,0,1)]" onClick={() => setIsOpen(false)}>
+              <FaTimes />
+            </button>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              form="competitionForm" // Connect button with form ID
+              className="btn btn-sm bg-[#78f8ff] text-black border-2 border-slate-700 hover:bg-[#3ae2e2] hover:text-black"
+            >
+              <FaCheck />
+            </button>
+          </div>
         </div>
 
         {/* Form yang bisa di-scroll */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[60vh] pr-2">
+        <form id="competitionForm" onSubmit={handleSubmit} className="overflow-y-auto max-h-[60vh] pr-2">
           <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Competition Name</span>
             </label>
             <input
               type="text"
-              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
               value={competitionName}
               onChange={(e) => setCompetitionName(e.target.value)}
               required
@@ -76,7 +87,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
             <label className="label">
               <span className="label-text text-black">Location</span>
             </label>
-            <input type="text" className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={Location} onChange={(e) => setLocation(e.target.value)} required />
+            <input type="text" className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={Location} onChange={(e) => setLocation(e.target.value)} required />
           </div>
           <div className="form-control mb-2">
             <label className="label">
@@ -84,7 +95,7 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
             </label>
             <input
               type="date"
-              className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
               value={competitionDate}
               onChange={(e) => setCompetitionDate(e.target.value)}
               required
@@ -94,18 +105,14 @@ const CompetitionModal = ({ isOpen, setIsOpen, competition }) => {
             <label className="label">
               <span className="label-text text-black">Status</span>
             </label>
-            <select className="input bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={status} onChange={(e) => setStatus(e.target.value)} required>
+            <select className="select select-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={status} onChange={(e) => setStatus(e.target.value)} required>
+              <option value="" disabled>
+                Select status
+              </option>
               <option value="ongoing">Ongoing</option>
               <option value="finished">Finished</option>
               <option value="upcoming">Upcoming</option>
             </select>
-          </div>
-
-          {/* Submit button */}
-          <div className="modal-action">
-            <button type="submit" className="btn bg-[#A6FAFF] text-black border-2 border-slate-700 hover:bg-[#62f2f2] hover:text-black">
-              {competition ? "Save Changes" : "Add Competition"}
-            </button>
           </div>
         </form>
       </div>

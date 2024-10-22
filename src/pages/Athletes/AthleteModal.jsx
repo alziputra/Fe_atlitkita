@@ -35,14 +35,14 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
     try {
       if (athlete) {
         await editAthlete(athlete.athlete_id, athleteData);
-        toast.success("Data atlet berhasil diperbarui!"); // Toast success
+        toast.success("Data atlet berhasil diperbarui!");
       } else {
         await addAthlete(athleteData);
-        toast.success("Data atlet berhasil ditambahkan!"); // Toast success
+        toast.success("Data atlet berhasil ditambahkan!");
       }
       setIsOpen(false);
     } catch (err) {
-      toast.error("Gagal menyimpan data atlet: " + err.message); // Toast error
+      toast.error("Gagal menyimpan data atlet: " + err.message);
     }
   };
 
@@ -56,25 +56,31 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             <button type="button" className="btn btn-sm bg-red-500 text-black border-2 border-slate-700 hover:bg-red-600 focus:shadow-[2px_2px_0px_rgba(0,0,0,1)]" onClick={() => setIsOpen(false)}>
               <FaTimes />
             </button>
-
             {/* Submit Button */}
             <button
               type="submit"
               form="athleteForm" // Connect button with form ID
-              className="btn btn-sm bg-blue-500 text-black border-2 border-slate-700 hover:bg-blue-600 focus:shadow-[2px_2px_0px_rgba(0,0,0,1)]"
+              className="btn btn-sm bg-[#78f8ff] text-black border-2 border-slate-700 hover:bg-[#3ae2e2] hover:text-black"
             >
               <FaCheck />
             </button>
           </div>
         </div>
 
-        {/* Form yang bisa di-scroll */}
+        {/* Form data atlet */}
         <form id="athleteForm" onSubmit={handleSubmit} className="overflow-y-auto max-h-[60vh] pr-2">
           <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Name</span>
             </label>
-            <input type="text" className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={name} onChange={(e) => setName(e.target.value)} required />
+            <input
+              type="text"
+              className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              placeholder="Enter athlete's name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
           </div>
           <div className="form-control mb-2">
             <label className="label">
@@ -92,16 +98,23 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
             <label className="label">
               <span className="label-text text-black">Martial Art</span>
             </label>
-            <input type="text" className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white" value={martial} onChange={(e) => setMartial(e.target.value)} required />
+            <input
+              type="text"
+              className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
+              placeholder="Enter martial art"
+              value={martial}
+              onChange={(e) => setMartial(e.target.value)}
+              required
+            />
           </div>
           <div className="form-control mb-2">
             <label className="label">
               <span className="label-text text-black">Height</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
-              placeholder="cm"
+              placeholder="Enter height (cm)"
               value={height}
               onChange={(e) => setHeight(e.target.value)}
               required
@@ -112,9 +125,9 @@ const AthleteModal = ({ isOpen, setIsOpen, athlete }) => {
               <span className="label-text text-black">Weight</span>
             </label>
             <input
-              type="text"
+              type="number"
               className="input input-sm bg-slate-500 focus:shadow-[inset_0_0_5px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)] text-white"
-              placeholder="kg"
+              placeholder="Enter weight (kg)"
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               required

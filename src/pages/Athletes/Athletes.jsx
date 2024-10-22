@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
 import { AthleteContext } from "../../context/AthleteContext";
-import { FaEdit, FaTrashAlt, FaPlus, FaSearch } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 import AthleteModal from "./AthleteModal";
 import ModalConfirmation from "../../components/ModalConfirmation";
 import toast from "react-hot-toast";
+import Pagination from "../../components/Pagination";
+import Search from "../../components/Search";
 
 const Athletes = () => {
   const { athletes, loading, error, deleteAthlete } = useContext(AthleteContext);
@@ -11,46 +13,41 @@ const Athletes = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedAthlete, setSelectedAthlete] = useState(null);
 
-  // Buat state untuk pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 5; // Atur jumlah data per halaman
+  const recordsPerPage = 5;
 
-  // Search state
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Buat fungsi untuk handle search query
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset menjadi halaman pertama setiap kali search query berubah
+    setCurrentPage(1);
   };
 
-  // Filter atlit berdasarkan search query
   const filteredAthletes = athletes.filter((athlete) => athlete.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  const totalPages = Math.ceil(filteredAthletes.length / recordsPerPage); // Jumlah halaman berdasarkan hasil yang difilter
-  // Buat fungsi untuk mendapatkan record terkini untuk pagination
+  const totalPages = Math.ceil(filteredAthletes.length / recordsPerPage);
   const currentAthletes = filteredAthletes.slice((currentPage - 1) * recordsPerPage, currentPage * recordsPerPage);
 
   const handleAdd = () => {
-    setSelectedAthlete(null); // Reset untuk mode add
+    setSelectedAthlete(null);
     setIsModalOpen(true);
   };
 
   const handleEdit = (athlete) => {
-    setSelectedAthlete(athlete); // Set athlete untuk di-edit
+    setSelectedAthlete(athlete);
     setIsModalOpen(true);
   };
 
   const handleDelete = (athlete) => {
-    setSelectedAthlete(athlete); // Set athlete untuk dihapus
+    setSelectedAthlete(athlete);
     setIsConfirmOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       await deleteAthlete(selectedAthlete.athlete_id);
-      toast.success("Data atlet berhasil dihapus!"); // Toast success
+      toast.success("Data atlet berhasil dihapus!");
     } catch (err) {
-      toast.error("Gagal menghapus data atlet: " + err.message); // Toast error
+      toast.error("Gagal menghapus data atlet: " + err.message);
     } finally {
       setIsConfirmOpen(false);
     }
@@ -70,19 +67,7 @@ const Athletes = () => {
           <h2 className="text-2xl font-bold text-slate-600">Athletes</h2>
         </div>
         <div className="flex gap-2 justify-end p-2">
-          <div className="relative w-full max-w-xs">
-            <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-400">
-              <FaSearch />
-            </span>
-            <input
-              type="text"
-              className="input input-sm pl-8 border-2 border-black w-full bg-[#F5F5DC] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-              placeholder="Search by name"
-              value={searchQuery}
-              onChange={handleSearch}
-            />
-          </div>
-
+          <Search searchQuery={searchQuery} onSearchChange={handleSearch} placeholder="Search by name" />
           <button className="flex btn btn-sm bg-[#2ac34b] hover:bg-[#74f590] text-white hover:text-black border-2 border-black hover:shadow-[2px_2px_0px_rgba(0,0,0,1)]" onClick={handleAdd}>
             <FaPlus />
             Add
@@ -133,16 +118,8 @@ const Athletes = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-4 gap-2">
-          <div className="flex btn-group gap-1  ">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button key={i + 1} className={`btn btn-sm bg-[#F5F5DC] text-zinc-700 ${currentPage === i + 1 ? "btn-active" : ""}`} onClick={() => handlePageChange(i + 1)}>
-                {i + 1}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Gunakan komponen Pagination */}
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
 
         {isModalOpen && <AthleteModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} athlete={selectedAthlete} />}
 
